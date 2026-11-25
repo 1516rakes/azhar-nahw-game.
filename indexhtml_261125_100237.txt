@@ -1,0 +1,2351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>صيد السمك في النحو الأزهري الشامل - 9 مستويات</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    input, textarea {
+      user-select: text !important;
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #161436;
+      color: #ffffff;
+    }
+
+    /* تدرجات السماء والبحر الليلية المستوحاة من Claude Artifacts */
+    .sky-gradient {
+      background: linear-gradient(180deg, #23164d 0%, #372273 60%, #4a2e94 100%);
+    }
+    .ocean-gradient {
+      background: linear-gradient(180deg, #163d69 0%, #102b4d 35%, #0a1c34 75%, #061121 100%);
+    }
+
+    /* أشعة الضوء تحت الماء */
+    .light-rays {
+      background: repeating-linear-gradient(
+        -72deg,
+        rgba(255, 255, 255, 0.035) 0px,
+        rgba(255, 255, 255, 0.035) 42px,
+        transparent 42px,
+        transparent 108px
+      );
+    }
+
+    /* حركة الأمواج السطحية */
+    @keyframes waveMove {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(-24px); }
+      100% { transform: translateX(0); }
+    }
+    .water-surface {
+      animation: waveMove 4s ease-in-out infinite;
+    }
+
+    /* حركة السحب البطيئة */
+    @keyframes cloudDrift {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(18px); }
+    }
+    .cloud-drift {
+      animation: cloudDrift 9s ease-in-out infinite;
+    }
+
+    /* حركة القارب اللطيفة */
+    @keyframes boatFloat {
+      0%, 100% { transform: translateY(0px) rotate(-0.9deg); }
+      50% { transform: translateY(-4px) rotate(1.1deg); }
+    }
+    .boat-float {
+      animation: boatFloat 3.3s ease-in-out infinite;
+    }
+
+    /* حركة الأعشاب البحرية المتوهجة */
+    @keyframes sway {
+      0%, 100% { transform: rotate(-6deg); }
+      50% { transform: rotate(7deg); }
+    }
+    .seaweed {
+      transform-origin: bottom center;
+      animation: sway 3.8s ease-in-out infinite;
+      filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.45));
+    }
+
+    /* حركة الفقاعات */
+    @keyframes bubbleRise {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.75; }
+      100% { transform: translateY(-210px) scale(1.25); opacity: 0; }
+    }
+    .bubble {
+      animation: bubbleRise 5.2s linear infinite;
+    }
+
+    /* توهج السمكة الذهبية النادرة */
+    @keyframes goldGlow {
+      0%, 100% { filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.85)); }
+      50% { filter: drop-shadow(0 0 16px rgba(250, 204, 21, 1)); }
+    }
+    .gold-fish-glow {
+      animation: goldGlow 1.7s ease-in-out infinite;
+    }
+
+    /* أزرار اللعبة ثلاثية الأبعاد */
+    .game-btn {
+      background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
+      color: #422006;
+      box-shadow: 0 4px 0 #a16207, 0 6px 12px rgba(0, 0, 0, 0.35);
+      transition: all 0.12s ease;
+    }
+    .game-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #a16207, 0 3px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* شريط التمرير المخصص */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #eab308;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="w-screen h-screen overflow-hidden relative">
+
+  <!-- ==================== 1. شاشة تسجيل الدخول لأول مرة (أو تبديل اللاعب) ==================== -->
+  <div id="startScreen" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sky-gradient">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-45">
+      <div class="w-36 h-36 bg-purple-400 rounded-full blur-3xl absolute top-10 right-10"></div>
+      <div class="w-44 h-44 bg-indigo-400 rounded-full blur-3xl absolute bottom-20 left-10"></div>
+    </div>
+
+    <div class="relative z-10 w-full max-w-md bg-slate-900/90 border-2 border-yellow-400/80 rounded-3xl p-6 sm:p-8 shadow-2xl text-center backdrop-blur-md">
+      <div class="mx-auto w-24 h-24 mb-4 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg border-4 border-purple-900">
+        <svg viewBox="0 0 64 64" class="w-14 h-14">
+          <path d="M10 38 L54 38 L46 52 L18 52 Z" fill="#581c87" stroke="#fde047" stroke-width="2.5"/>
+          <circle cx="32" cy="24" r="7" fill="#fde047"/>
+          <path d="M22 21 Q32 14 42 21 Z" fill="#f59e0b"/>
+          <path d="M36 28 L52 14" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
+          <path d="M52 14 L52 34" stroke="#e2e8f0" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-black text-yellow-400 mb-1">صيد السمك في النحو الأزهري</h1>
+      <p class="text-sm sm:text-base text-purple-200 font-semibold mb-5">
+        المنهج الكامل للصف الأول الثانوي • شرح ابن عقيل (٩ مستويات)
+      </p>
+
+      <div class="bg-slate-800/85 rounded-2xl p-4 mb-5 border border-slate-700 text-right">
+        <label for="playerNameInput" class="block text-sm font-bold text-yellow-300 mb-2">
+          سجّل اسمك ليُحفظ حسابك تلقائياً ويُكتب على القارب:
+        </label>
+        <input
+          type="text"
+          id="playerNameInput"
+          maxlength="22"
+          placeholder="مثال: أحمد الأزهري"
+          class="w-full px-4 py-3 rounded-xl bg-slate-950 border-2 border-purple-500 focus:border-yellow-400 focus:outline-none text-white font-bold text-lg text-center placeholder-slate-500 transition"
+        />
+      </div>
+
+      <button
+        id="startGameBtn"
+        type="button"
+        class="w-full py-3.5 rounded-2xl font-black text-xl game-btn cursor-pointer flex items-center justify-center gap-2"
+      >
+        <span>حفظ الحساب وبدء الصيد</span>
+        <span class="text-2xl">🎣</span>
+      </button>
+
+      <button
+        id="cancelSwitchBtn"
+        type="button"
+        class="hidden w-full mt-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm cursor-pointer transition"
+      >
+        العودة للحساب الحالي
+      </button>
+
+      <p class="text-xs text-slate-400 mt-4">
+        يُحفظ تقدمك ونقاطك وأدواتك تلقائياً حتى عند إغلاق الصفحة 🔒
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== 2. شاشة اللعب الرئيسية ==================== -->
+  <div id="gameContainer" class="w-full h-full flex flex-col relative hidden">
+
+    <!-- الشريط العلوي -->
+    <header class="relative z-30 w-full px-2 sm:px-5 pt-2 pb-1.5 flex items-center justify-between gap-1 bg-slate-950/45 backdrop-blur-sm border-b border-white/10">
+      <div class="flex items-center gap-1 sm:gap-2 flex-wrap">
+        <!-- زر الصوت -->
+        <button id="soundToggleBtn" type="button" title="تفعيل/كتم الصوت" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full game-btn flex items-center justify-center text-base sm:text-lg cursor-pointer">
+          🔊
+        </button>
+
+        <!-- قائمة المستويات التسعة -->
+        <div class="relative">
+          <button id="levelDropdownBtn" type="button" class="px-2.5 sm:px-3.5 h-9 sm:h-10 rounded-full game-btn font-extrabold text-xs sm:text-sm flex items-center gap-1 cursor-pointer">
+            <span id="currentLevelText">المستوى 1</span>
+            <span class="text-[10px]">▼</span>
+          </button>
+          <div id="levelMenu" class="hidden absolute right-0 mt-2 w-72 sm:w-80 bg-slate-900 border-2 border-yellow-400 rounded-2xl shadow-2xl p-2 z-50">
+            <div class="text-xs font-bold text-yellow-300 px-2 py-1 border-b border-slate-700 mb-1 flex justify-between">
+              <span>المنهج الكامل (٩ مستويات):</span>
+              <span id="totalProgressBadge" class="text-cyan-300">0/81 سؤال</span>
+            </div>
+            <div id="levelListContainer" class="space-y-1 max-h-72 overflow-y-auto"></div>
+          </div>
+        </div>
+
+        <!-- زر المتجر -->
+        <button id="openShopBtn" type="button" class="px-3 sm:px-4 h-9 sm:h-10 rounded-full game-btn font-extrabold text-xs sm:text-sm flex items-center gap-1 cursor-pointer">
+          <span>المتجر</span>
+          <span>🛒</span>
+        </button>
+
+        <!-- زر تبديل اللاعب / الحساب -->
+        <button id="switchPlayerBtn" type="button" title="تبديل اللاعب أو بدء حساب جديد" class="px-2.5 sm:px-3 h-9 sm:h-10 rounded-full bg-slate-800/90 hover:bg-slate-700 border border-purple-400/50 text-purple-200 font-bold text-[11px] sm:text-xs flex items-center gap-1 cursor-pointer transition">
+          <span>👤</span>
+          <span class="hidden sm:inline">تبديل اللاعب</span>
+        </button>
+      </div>
+
+      <!-- العداد الأيمن: السمك المتبقي والنقاط -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <div class="hidden md:flex items-center gap-1.5 bg-slate-900/80 border border-cyan-400/50 px-3 py-1 rounded-full text-xs font-bold text-cyan-200">
+          <span>🐟 متبقي:</span>
+          <span id="fishRemainingText" class="text-yellow-300 font-black">9/9</span>
+        </div>
+
+        <div class="flex items-center gap-1.5 bg-purple-950/95 border-2 border-yellow-400 px-2.5 sm:px-4 h-9 sm:h-10 rounded-full shadow-lg">
+          <span id="coinsDisplay" class="font-black text-sm sm:text-lg text-yellow-300 tracking-wide">0</span>
+          <span class="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-200 border border-yellow-600 inline-block shadow-inner"></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- شريط عنوان الدرس الحالي -->
+    <div class="relative z-20 w-full bg-indigo-950/80 px-3 py-1 text-center border-b border-indigo-400/20 flex items-center justify-center gap-2 text-xs sm:text-sm">
+      <span class="text-yellow-400 font-bold shrink-0">الباب:</span>
+      <span id="lessonTitleBanner" class="font-extrabold text-white truncate">الكلام وما يتألف منه</span>
+      <span class="md:hidden text-cyan-300 font-bold bg-slate-900/70 px-2 py-0.5 rounded-full text-[11px] shrink-0">
+        🐟 <span id="fishRemainingMobile">9/9</span>
+      </span>
+    </div>
+
+    <!-- منطقة السماء والبحر التفاعلية -->
+    <main id="playArea" class="relative flex-1 w-full overflow-hidden flex flex-col cursor-pointer">
+
+      <!-- جزء السماء -->
+      <div class="relative w-full h-[25%] min-h-[130px] sky-gradient overflow-visible">
+        <!-- القمر المضيء -->
+        <div class="absolute top-3 left-7 sm:left-16 w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-yellow-100/90 shadow-[0_0_45px_rgba(254,249,195,0.65)]"></div>
+
+        <!-- سحب متحركة -->
+        <svg class="cloud-drift absolute top-4 left-4 sm:left-12 w-28 sm:w-36 opacity-80 pointer-events-none" viewBox="0 0 120 50">
+          <path d="M25 40 H95 A15 15 0 0 0 95 10 A20 20 0 0 0 58 8 A18 18 0 0 0 25 22 A12 12 0 0 0 25 40 Z" fill="#f8fafc"/>
+        </svg>
+        <svg class="cloud-drift absolute top-6 right-1/4 w-24 sm:w-32 opacity-70 pointer-events-none" style="animation-delay: 2.5s;" viewBox="0 0 120 50">
+          <path d="M25 40 H95 A15 15 0 0 0 95 10 A20 20 0 0 0 58 8 A18 18 0 0 0 25 22 A12 12 0 0 0 25 40 Z" fill="#e2e8f0"/>
+        </svg>
+
+        <!-- القارب ثابت في المنتصف مع اسم اللاعب المحفوظ -->
+        <div id="boatWrapper" class="absolute bottom-[-14px] left-1/2 -translate-x-1/2 z-20 pointer-events-none" style="width: 190px;">
+          <div id="boatFloatContainer" class="boat-float relative w-full flex flex-col items-center">
+            <svg id="boatSvg" viewBox="0 0 240 130" class="w-full h-auto overflow-visible drop-shadow-xl">
+              <!-- الصياد -->
+              <rect x="86" y="46" width="24" height="32" rx="10" fill="#3b0764" />
+              <circle cx="98" cy="34" r="12" fill="#fcd34d" />
+              <circle cx="94" cy="32" r="1.8" fill="#1e1b4b" />
+              <circle cx="102" cy="32" r="1.8" fill="#1e1b4b" />
+              <path d="M94 37 Q98 41 102 37" stroke="#1e1b4b" stroke-width="1.8" fill="none" stroke-linecap="round" />
+              <ellipse cx="98" cy="25" rx="19" ry="4.5" fill="#facc15" />
+              <path d="M86 25 C86 15, 110 15, 110 25 Z" fill="#eab308" />
+
+              <!-- عصا الصنارة -->
+              <line id="rodStick" x1="104" y1="62" x2="178" y2="10" stroke="#92400e" stroke-width="5" stroke-linecap="round" />
+              <path d="M98 54 L112 60" stroke="#fcd34d" stroke-width="5" stroke-linecap="round" />
+
+              <!-- جسم القارب -->
+              <path id="boatHull" d="M25 78 L205 78 L184 114 C178 122, 52 122, 46 114 Z" fill="#581c87" />
+              <rect x="20" y="73" width="190" height="7" rx="3.5" fill="#facc15" />
+              <rect id="boatUpgradeStripe" x="38" y="85" width="154" height="3" rx="1.5" fill="#a855f7" opacity="0" />
+
+              <!-- اسم اللاعب المحفوظ -->
+              <text id="boatNameText" x="115" y="103" text-anchor="middle" fill="#fde047" font-family="Cairo, sans-serif" font-weight="900" font-size="16">
+                الطالب الأزهري
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- خط سطح الماء المتموج -->
+      <div class="relative z-10 w-[110%] -right-[5%] h-3 bg-cyan-300/30 border-t-2 border-cyan-200/60 water-surface"></div>
+
+      <!-- جزء المحيط -->
+      <div id="oceanArea" class="relative flex-1 w-full ocean-gradient light-rays overflow-hidden">
+        <!-- خط أقصى عمق للصنارة -->
+        <div id="maxDepthLine" class="absolute left-0 right-0 border-b-2 border-dashed border-yellow-400/35 pointer-events-none transition-all duration-500 flex justify-end px-3" style="top: 68%;">
+          <span class="text-[10px] sm:text-xs text-yellow-300/80 bg-slate-950/65 px-2 py-0.5 rounded-t-md font-bold">
+            أقصى عمق للصنارة (طوّر طول الخيط من المتجر)
+          </span>
+        </div>
+
+        <!-- حاوية الأسماك الـ 9 -->
+        <div id="fishContainer" class="absolute inset-0 z-10"></div>
+
+        <!-- فقاعات مائية -->
+        <div class="bubble absolute bottom-6 left-[15%] w-3 h-3 rounded-full border border-white/40"></div>
+        <div class="bubble absolute bottom-10 left-[48%] w-2.5 h-2.5 rounded-full border border-white/30" style="animation-delay: 1.8s;"></div>
+        <div class="bubble absolute bottom-4 left-[82%] w-4 h-4 rounded-full border border-white/35" style="animation-delay: 3.1s;"></div>
+
+        <!-- قاع البحر والأعشاب البحرية المتوهجة -->
+        <div class="absolute bottom-0 inset-x-0 h-10 bg-slate-950/85 border-t border-slate-800 pointer-events-none flex items-end justify-around px-4">
+          <svg class="seaweed w-8 h-20 -mb-1" viewBox="0 0 30 80"><path d="M15 80 Q5 60 18 40 T12 5" stroke="#22c55e" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+          <svg class="seaweed w-8 h-24 -mb-1" style="animation-delay:0.7s" viewBox="0 0 30 80"><path d="M15 80 Q25 55 10 35 T18 2" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+          <svg class="seaweed w-8 h-16 -mb-1" style="animation-delay:1.4s" viewBox="0 0 30 80"><path d="M15 80 Q6 60 19 42 T14 10" stroke="#4ade80" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+          <svg class="seaweed w-8 h-24 -mb-1" style="animation-delay:0.4s" viewBox="0 0 30 80"><path d="M15 80 Q24 58 11 36 T17 4" stroke="#22c55e" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+          <svg class="seaweed w-8 h-20 -mb-1" style="animation-delay:1.9s" viewBox="0 0 30 80"><path d="M15 80 Q7 62 18 40 T12 8" stroke="#15803d" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+        </div>
+
+        <!-- شريط تلميح سفلي -->
+        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 bg-slate-950/80 border border-white/15 px-4 py-1 rounded-full text-[11px] sm:text-xs text-slate-200 pointer-events-none whitespace-nowrap">
+          اضغط في أي مكان لإطلاق الصنارة في زاويتها الحالية! 🎣
+        </div>
+      </div>
+
+      <!-- خيط الصنارة البندولي المتصل بطرف العصا -->
+      <svg id="fishingLineSvg" class="absolute inset-0 w-full h-full pointer-events-none z-30">
+        <line id="fishingLine" x1="0" y1="0" x2="0" y2="0" stroke="#f8fafc" stroke-width="2.4" stroke-linecap="round" />
+        <g id="hookGroup" transform="translate(0, 0)">
+          <circle cx="0" cy="-6" r="7" fill="#fb7185" stroke="#fff" stroke-width="1.5" />
+          <path d="M0 1 L0 12 A6 6 0 0 1 -10 12" fill="none" stroke="#e2e8f0" stroke-width="2.5" stroke-linecap="round" />
+          <path id="secondHookVisual" class="hidden" d="M4 3 L12 13 A6 6 0 0 0 20 8" fill="none" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" />
+        </g>
+      </svg>
+    </main>
+  </div>
+
+  <!-- ==================== 3. نافذة السؤال النحوي (متعدد + صح/خطأ + كتابة) ==================== -->
+  <div id="questionModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm">
+    <div class="w-full max-w-lg bg-slate-900 border-2 border-yellow-400 rounded-3xl p-5 sm:p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4 gap-2">
+        <div class="flex items-center gap-2">
+          <span id="modalFishBadge" class="text-2xl">🐟</span>
+          <div>
+            <span id="modalLevelLesson" class="block text-xs text-purple-300 font-bold">المستوى 1 • الكلام وما يتألف منه</span>
+            <span id="modalQuestionTypeBadge" class="inline-block mt-0.5 text-[11px] bg-indigo-900/90 border border-indigo-400/50 text-cyan-200 px-2 py-0.5 rounded-full font-bold">
+              اختيار من متعدد
+            </span>
+            <span id="modalComboNotice" class="hidden block text-xs text-amber-400 font-extrabold mt-0.5">🔥 صيد مزدوج! ستكسب نقاط السمكتين معاً!</span>
+          </div>
+        </div>
+        <div class="bg-yellow-400/20 border border-yellow-400 px-3 py-1 rounded-full text-yellow-300 font-black text-sm shrink-0">
+          +<span id="modalPointsValue">30</span> نقطة
+        </div>
+      </div>
+
+      <!-- نص السؤال -->
+      <div class="bg-slate-800/95 border border-slate-700 rounded-2xl p-4 mb-4">
+        <h3 id="questionText" class="text-base sm:text-lg font-extrabold text-white leading-relaxed">
+          نص السؤال يظهر هنا...
+        </h3>
+      </div>
+
+      <!-- حاوية خيارات (متعدد / صح وخطأ / إدخال نصي) -->
+      <div id="optionsContainer" class="space-y-2.5"></div>
+
+      <!-- صندوق النتيجة والتفسير النحوي -->
+      <div id="feedbackBox" class="hidden mt-4 p-3.5 rounded-2xl border text-sm font-bold leading-relaxed"></div>
+
+      <button id="closeQuestionBtn" type="button" class="hidden w-full mt-4 py-3 rounded-2xl game-btn font-black text-base cursor-pointer">
+        متابعة الصيد 🎣
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 4. نافذة المتجر ==================== -->
+  <div id="shopModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm">
+    <div class="w-full max-w-xl bg-slate-900 border-2 border-yellow-400 rounded-3xl p-5 sm:p-6 shadow-2xl max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🛒</span>
+          <h2 class="text-xl sm:text-2xl font-black text-yellow-400">متجر أدوات الصيد</h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="bg-purple-950 border border-yellow-400 px-3 py-1 rounded-full text-yellow-300 font-black text-sm">
+            رصيدك: <span id="shopCoinsDisplay">0</span> 🪙
+          </div>
+          <button id="closeShopBtn" type="button" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-red-600 text-white font-bold flex items-center justify-center cursor-pointer transition">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div id="shopItemsContainer" class="space-y-3 overflow-y-auto pr-1 flex-1"></div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. نافذة إتمام المستوى ==================== -->
+  <div id="levelCompleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+    <div class="w-full max-w-md bg-gradient-to-b from-purple-950 to-slate-900 border-2 border-yellow-400 rounded-3xl p-6 text-center shadow-2xl">
+      <div class="text-5xl mb-3">🏆</div>
+      <h2 id="completeTitle" class="text-2xl font-black text-yellow-400 mb-2">أحسنت يا بطل النحو!</h2>
+      <p id="completeSubtitle" class="text-sm sm:text-base text-slate-200 mb-5 leading-relaxed">
+        لقد اصطدت جميع الأسماك التسع في هذا المستوى بنجاح!
+      </p>
+      <div class="bg-slate-950/70 border border-yellow-500/40 rounded-2xl p-3 mb-5">
+        <span class="text-xs text-slate-400 block">إجمالي نقاطك المحفوظة</span>
+        <span id="completeScoreDisplay" class="text-2xl font-black text-yellow-300">0</span>
+      </div>
+      <button id="nextLevelBtn" type="button" class="w-full py-3.5 rounded-2xl game-btn font-black text-lg cursor-pointer">
+        الانتقال للمستوى التالي ⬅️
+      </button>
+    </div>
+  </div>
+
+  <!-- إشعار عائم سريع -->
+  <div id="toastMessage" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900/95 border-2 border-yellow-400 text-yellow-300 px-5 py-2.5 rounded-full font-extrabold text-sm shadow-2xl text-center">
+  </div>
+
+  <script>
+    /**
+     * =========================================================================
+     * 1. قاعدة بيانات المنهج الكامل للنحو الأزهري (الصف الأول الثانوي - شرح ابن عقيل)
+     * 9 مستويات × 9 أسئلة = 81 سؤالاً متنوعاً:
+     *   - type: "mcq"   (اختيار من متعدد - 4 خيارات)
+     *   - type: "tf"    (صح أم خطأ)
+     *   - type: "write" (أكمل / اكتب الإجابة بنفسك)
+     * =========================================================================
+     */
+    const NAHW_LEVELS = [
+      {
+        id: 1,
+        title: "المستوى 1: الكلام وما يتألف منه",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما تعريف (الكلام) في اصطلاح النحويين كما ذكر ابن مالك؟",
+            options: [
+              "اللفظ المفيد فائدة يحسن السكوت عليها",
+              "كل ما يُنطق به سواء أفاد أم لم يفد",
+              "ما تركب من ثلاث كلمات فأكثر مطلقاً",
+              "الاسم والفعل فقط دون الحرف"
+            ],
+            correct: 0,
+            explanation: "الكلام عند النحويين هو: اللفظ المفيد فائدة يحسن السكوت عليها، مثل: (استقم) و(زيدٌ قائمٌ)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: قولنا (إنْ قامَ زيدٌ) يُسمى عند النحويين كلاماً وكَلِماً معاً.",
+            correctBool: false,
+            explanation: "خطأ؛ لأنه مكون من ثلاث كلمات فهو (كَلِم)، لكنه لم يُفِد فائدة يحسن السكوت عليها فلا يُسمى (كلاماً)."
+          },
+          {
+            type: "write",
+            q: "أكمل: أقل ما يتألف منه (الكَلِم) عند النحويين هو ...... كلمات فأكثر، سواء أفاد أم لم يفد.",
+            acceptedAnswers: ["ثلاث", "ثلاثة", "3"],
+            modelAnswer: "ثلاث",
+            explanation: "الكَلِم اسم جنس واحده كلمة، وهو ما تركب من ثلاث كلمات فأكثر أفاد أم لم يفد."
+          },
+          {
+            type: "mcq",
+            q: "أيُّ نوع من أنواع التنوين يختص بالأسماء المبنية مثل (سيبويهِ) و(صَهٍ)؟",
+            options: [
+              "تنوين التمكين",
+              "تنوين التنكير",
+              "تنوين المقابلة",
+              "تنوين العوض"
+            ],
+            correct: 1,
+            explanation: "تنوين التنكير يلحق الأسماء المبنية فرقاً بين معرفتها ونكرتها، نحو: مررت بسيبويهِ وسيبويهٍ آخر."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: التنوين اللاحق لجمع المؤنث السالم مثل (مسلماتٌ) يُسمى تنوين المقابلة.",
+            correctBool: true,
+            explanation: "صح؛ لأنه جُعل في مقابلة النون في جمع المذكر السالم (مسلمون)."
+          },
+          {
+            type: "write",
+            q: "اكتب المصطلح النحوي: اللفظ الدال على معنى في غيره ولا يقبل علامات الأسماء ولا علامات الأفعال هو:",
+            acceptedAnswers: ["الحرف", "حرف"],
+            modelAnswer: "الحرف",
+            explanation: "الحرف ما دل على معنى في غيره وعلامته عدمية (عدم قبول علامات الاسم والفعل)، مثل: هل، في، لم."
+          },
+          {
+            type: "mcq",
+            q: "ما العلامة التي يتميز بها الفعل الماضي عن المضارع والأمر؟",
+            options: [
+              "قبول (لم) الجازمة",
+              "قبول تاء الفاعل وتاء التأنيث الساكنة",
+              "قبول ياء المخاطبة مع الدلالة على الطلب",
+              "قبول التنوين والجر"
+            ],
+            correct: 1,
+            explanation: "يمتاز الفعل الماضي بقبوله تاء الفاعل (تَبَارَكْتَ) وتاء التأنيث الساكنة (نِعْمَتْ وبِئْسَتْ)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: كلمة (صَهٍ) اسم فعل أمر لأنها تدل على الطلب وتقبل التنوين ولا تقبل ياء المخاطبة.",
+            correctBool: true,
+            explanation: "صح؛ فالكلمة الدالة على الأمر إذا لم تقبل ياء المخاطبة فهي اسم فعل أمر مثل: صَهٍ وحَيَّهَلْ."
+          },
+          {
+            type: "write",
+            q: "اكتب اسم الفعل المضارع الذي يُعرف بقبوله دخول الجازم (لم) عليه مثل (لم يلد ولم يولد):",
+            acceptedAnswers: ["المضارع", "الفعل المضارع", "فعل مضارع"],
+            modelAnswer: "الفعل المضارع",
+            explanation: "يتميز الفعل المضارع بقبوله (لم) الجازمة، قال ابن مالك: (فعل مضارع يلي لم كيشم)."
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "المستوى 2: المعرب والمبني والأسماء الستة",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما علة (بناء الاسم) عند جمهور النحويين وابن مالك؟",
+            options: [
+              "ثقله في النطق",
+              "شبهه بالحرف شبهاً يقربه منه",
+              "عدم دخوله في جملة مفيدة",
+              "كونه على أكثر من أربعة أحرف"
+            ],
+            correct: 1,
+            explanation: "يُبنى الاسم لشبهه بالحرف، قال ابن مالك: (والاسم منه معرب ومبني ** لشبه من الحروف مدني)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: بناء الضمائر مثل (تاء الفاعل) و(نا) يرجع إلى الشبه الوضعي بالحرف.",
+            correctBool: true,
+            explanation: "صح؛ لأن الأصل في الحرف أن يُوضع على حرف أو حرفين، والضمائر أشبهت الحرف في ذلك."
+          },
+          {
+            type: "write",
+            q: "اكتب نوع الشبه الذي بُنيت لأجله الأسماء الموصولة مثل (الذي) و(التي):",
+            acceptedAnswers: ["الافتقاري", "الشبه الافتقاري", "افتقاري"],
+            modelAnswer: "الشبه الافتقاري",
+            explanation: "الشبه الافتقاري: أن يفتقر الاسم افتقاراً متأصلاً إلى جملة الصلة تتمم معناه."
+          },
+          {
+            type: "mcq",
+            q: "أيُّ أنواع البناء الآتية يدخل الاسم والفعل والحرف معاً؟",
+            options: [
+              "السكون والفتح",
+              "الضم والكسر",
+              "الكسر فقط",
+              "الضم فقط"
+            ],
+            correct: 0,
+            explanation: "البناء على السكون والفتح يدخلان الاسم والفعل والحرف، أما الضم والكسر فلا يدخلان الفعل."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: الجر يختص بالأسماء، والجزم يختص بالأفعال، والرفع والنصب يشترك فيهما الاسم والفعل.",
+            correctBool: true,
+            explanation: "صح؛ قال ابن مالك: (والاسم قد خُصص بالجر كما ** قد خُصص الفعل بأن يُنجزما)."
+          },
+          {
+            type: "write",
+            q: "ما علامة رفع الأسماء الستة (أبوك، أخوك، حموك...) نيابة عن الضمة؟",
+            acceptedAnswers: ["الواو", "واو"],
+            modelAnswer: "الواو",
+            explanation: "تُرفع الأسماء الستة بالواو، وتُنصب بالألف، وتُجر بالياء نيابة عن الحركات."
+          },
+          {
+            type: "mcq",
+            q: "ما الشرط الخاص بكلمة (فُو) حتى تُعرب بالحروف إعراب الأسماء الستة؟",
+            options: [
+              "أن تكون بمعنى صاحب",
+              "أن تخلو من الميم",
+              "أن تكون مصغرة",
+              "أن تُضاف إلى ياء المتكلم"
+            ],
+            correct: 1,
+            explanation: "يُشترط في (فو) خلوها من الميم؛ فإن اتصلت بها الميم (فمٌ) أُعربت بالحركات الظاهرة."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: إذا أُضيفت الأسماء الستة إلى ياء المتكلم مثل (حضرَ أبي) فإنها تُرفع بالواو المقدرة.",
+            correctBool: false,
+            explanation: "خطأ؛ بل تُعرب بحركات مقدرة على ما قبل ياء المتكلم منع من ظهورها اشتغال المحل بحركة المناسبة."
+          },
+          {
+            type: "write",
+            q: "ما اللغة الأفصح والأشهر في كلمة (هَنُوكَ) من الأسماء الستة (الإتمام أم القصر أم النقص)؟",
+            acceptedAnswers: ["النقص", "نقص"],
+            modelAnswer: "النقص",
+            explanation: "الأفصح في (هن) النقص، وهو حذف لامه وإعرابه بالحركات الظاهرة على النون: هذا هَنُكَ."
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "المستوى 3: المثنى وجمع المذكر السالم",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما شرط إعراب (كِلا وكلتا) إعراب المثنى بالألف رفعاً وبالياء نصباً وجراً؟",
+            options: [
+              "أن يُضافا إلى اسم ظاهر",
+              "أن يُضافا إلى ضمير",
+              "أن يكونا نكرتين",
+              "أن يقعا مبتدأ فقط"
+            ],
+            correct: 1,
+            explanation: "تُلحق (كلا وكلتا) بالمثنى بشرط إضافتهما إلى ضمير، نحو: جاء الطالبان كلاهما، ورأيت الطالبتين كلتيهما."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: (اثنان واثنتان) يُعربان إعراب المثنى بلا شرط سواء أُفردا أم رُكّبا أم أُضيفا.",
+            correctBool: true,
+            explanation: "صح؛ لأنهما ملحقان بالمثنى مطلقاً لعدم وجود مفرد لهما من لفظهما."
+          },
+          {
+            type: "write",
+            q: "أعرب كلمة (كلا) في قولنا (جاءَ كِلا الطالبين): فاعل مرفوع وعلامة رفعه ...... المقدرة.",
+            acceptedAnswers: ["الضمة", "ضمة"],
+            modelAnswer: "الضمة",
+            explanation: "إذا أضيفت (كلا وكلتا) إلى اسم ظاهر أُعربتا بحركات مقدرة على الألف منع من ظهورها التعذر."
+          },
+          {
+            type: "mcq",
+            q: "لماذا لا يُجمع العَلَم المذكر (حمزة) و(طلحة) جمع مذكر سالماً؟",
+            options: [
+              "لأنهما غير عاقلين",
+              "لاشتمالهما على تاء التأنيث",
+              "لأنهما مركبان تركيباً مزجياً",
+              "لأنهما صفتان"
+            ],
+            correct: 1,
+            explanation: "يُشترط في العَلَم المجموع جمع مذكر سالماً أن يكون لمذكر عاقل خالٍ من تاء التأنيث والتركيب."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: نون المثنى مكسورة في الأصل (الزيدانِ)، بينما نون جمع المذكر السالم مفتوحة (الزيدونَ).",
+            correctBool: true,
+            explanation: "صح؛ قال ابن مالك: (ونون مجموع وما به التحق ** فافتح، وقلّ من بكسره نطق)."
+          },
+          {
+            type: "write",
+            q: "أكمل: ألفاظ العقود (عشرون إلى تسعين) وأولو وعالمون تُلحق بجمع المذكر السالم لأنها أسماء ...... لا مفرد لها من لفظها.",
+            acceptedAnswers: ["جموع", "جمع", "الجموع"],
+            modelAnswer: "جموع",
+            explanation: "تُسمى أسماء جموع لأنها تدل على معنى الجمع وليس لها مفرد من لفظها."
+          },
+          {
+            type: "mcq",
+            q: "لماذا أُلحقت كلمة (أَرَضُونَ) بجمع المذكر السالم؟",
+            options: [
+              "لأن مفردها (أرض) مؤنث غير عاقل",
+              "لأنها صفة لعاقل",
+              "لأنها علم لمذكر",
+              "لأنها مركبة"
+            ],
+            correct: 0,
+            explanation: "(أرضون) جمع تكسير لمفرد مؤنث غير عاقل (أرض)، ففقدت شرط التذكير والعقل فأُلحقت بالجمع."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: الصفة (أحمر) ومؤنثها (حمراء) تُجمع جمع مذكر سالماً فيُقال (أحمرون).",
+            correctBool: false,
+            explanation: "خطأ؛ لأن الصفة التي على وزن (أفعل فعلاء) لا تُجمع جمع مذكر سالماً."
+          },
+          {
+            type: "write",
+            q: "ما علامة جر كلمة (عالمين) في قوله تعالى ﴿ربِّ العالمين﴾؟",
+            acceptedAnswers: ["الياء", "ياء"],
+            modelAnswer: "الياء",
+            explanation: "(عالمين) مضاف إليه مجرور وعلامة جره الياء لأنه ملحق بجمع المذكر السالم."
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "المستوى 4: جمع المؤنث السالم والممنوع من الصرف",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما علامة نصب جمع المؤنث السالم وما جُمع بألف وتاء مزيدتين؟",
+            options: [
+              "الفتحة الظاهرة",
+              "الكسرة نيابة عن الفتحة",
+              "الياء",
+              "الألف"
+            ],
+            correct: 1,
+            explanation: "يُرفع جمع المؤنث السالم بالضمة، ويُنصب ويُجر بالكسرة نيابة عن الفتحة."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: كلمة (أبيات) و(أصوات) تُنصب بالكسرة لأنها جمع مؤنث سالم.",
+            correctBool: false,
+            explanation: "خطأ؛ لأن التاء فيهما أصلية (بيت، صوت) وليست زائدة، فهما جمع تكسير يُنصب بالفتحة: قرأتُ أبياتاً."
+          },
+          {
+            type: "write",
+            q: "اكتب الاسم الملحق بجمع المؤنث السالم بمعنى (صاحبات) في قوله تعالى ﴿وإن كنّ ...... حملٍ﴾:",
+            acceptedAnswers: ["أولات", "اولات"],
+            modelAnswer: "أولات",
+            explanation: "(أُولات) اسم جمع بمعنى صاحبات ولا مفرد له من لفظه، لذا أُلحق بجمع المؤنث السالم."
+          },
+          {
+            type: "mcq",
+            q: "كلمة (أَذْرِعَات) و(عَرَفَات) أُلحقت بجمع المؤنث السالم لأنها:",
+            options: [
+              "مما سُمّي به (صارت علماً لمكان)",
+              "جمع تكسير",
+              "اسم مقصور",
+              "مبنية على الكسر"
+            ],
+            correct: 0,
+            explanation: "ما سُمّي به من هذا الجمع (مثل أذرعات وعرفات) يُلحق بجمع المؤنث السالم فيُرفع بالضمة ويُنصب ويُجر بالكسرة."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: الممنوع من الصرف يُجر بالفتحة نيابة عن الكسرة بشرط ألا يُضاف وألا تقترن به (أل).",
+            correctBool: true,
+            explanation: "صح؛ قال ابن مالك: (وجر بالفتحة ما لا ينصرف ** ما لم يُضف أو يكُ بعد أل ردف)."
+          },
+          {
+            type: "write",
+            q: "أعرب كلمة (مساجدَ) في قولنا (صليتُ في مساجدَ كثيرةٍ): اسم مجرور وعلامة جره ...... نيابة عن الكسرة.",
+            acceptedAnswers: ["الفتحة", "فتحة"],
+            modelAnswer: "الفتحة",
+            explanation: "(مساجد) ممنوع من الصرف لأنه على صيغة منتهى الجموع، وخلا من (أل) والإضافة فجُر بالفتحة."
+          },
+          {
+            type: "mcq",
+            q: "لماذا مُنعت كلمة (فاطمة) و(حمزة) من الصرف؟",
+            options: [
+              "للعلمية والتأنيث",
+              "للعلمية وزيادة الألف والنون",
+              "للوصفية ووزن الفعل",
+              "لصيغة منتهى الجموع"
+            ],
+            correct: 0,
+            explanation: "تُمنع الأعلام المؤنثة (سواء كان التأنيث لفظياً كحمزة أم معنوياً كزينب أم لفظياً ومعنوياً كفاطمة) من الصرف."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: الاسم المنتهي بألف التأنيث المقصورة مثل (سلمى) أو الممدودة مثل (صحراء) يُمنع من الصرف لعلة واحدة.",
+            correctBool: true,
+            explanation: "صح؛ فألف التأنيث المقصورة أو الممدودة وصيغة منتهى الجموع تمنع الاسم من الصرف لعلة واحدة."
+          },
+          {
+            type: "write",
+            q: "أكمل: العَلَم الأعجمي الزائد على ثلاثة أحرف مثل (إبراهيم) يُمنع من الصرف للعلمية و......",
+            acceptedAnswers: ["العجمة", "عجمة"],
+            modelAnswer: "العجمة",
+            explanation: "يُمنع العَلَم الأعجمي من الصرف إذا كان علماً في لغة العجم وزائداً على ثلاثة أحرف."
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "المستوى 5: الأفعال الخمسة والمعتل والضمير والعَلَم",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما تعريف (الأفعال الخمسة) كما ذكرها ابن مالك؟",
+            options: [
+              "كل فعل مضارع اتصل به ألف اثنين أو واو جماعة أو ياء مخاطبة",
+              "كل فعل ماضٍ اتصلت به واو الجماعة",
+              "كل فعل أمر مبني على حذف النون",
+              "الأفعال الناسخة الخمسة"
+            ],
+            correct: 0,
+            explanation: "الأفعال الخمسة هي كل مضارع اتصل به ألف اثنين (يفعلان، تفعلان) أو واو جماعة (يفعلون، تفعلون) أو ياء مخاطبة (تفعلين)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: تُرفع الأفعال الخمسة بثبوت النون، وتُنصب وتُجزم بحذف النون.",
+            correctBool: true,
+            explanation: "صح؛ نحو: (الطلاب يذاكرون، ولن يهملوا، ولم يقصروا)."
+          },
+          {
+            type: "write",
+            q: "ما علامة جزم الفعل المضارع المعتل الآخر مثل (لم يخشَ، لم يدعُ، لم يرمِ)؟",
+            acceptedAnswers: ["حذف حرف العلة", "حذف العلة"],
+            modelAnswer: "حذف حرف العلة",
+            explanation: "يُجزم الفعل المضارع المعتل الآخر بحذف حرف العلة (الألف أو الواو أو الياء)."
+          },
+          {
+            type: "mcq",
+            q: "ما أعرف المعارف على الإطلاق بعد لفظ الجلالة (الله)؟",
+            options: [
+              "الضمير (المضمر)",
+              "العَلَم",
+              "اسم الإشارة",
+              "المعرف بأل"
+            ],
+            correct: 0,
+            explanation: "الضمير هو أعرف المعارف، ويليه العَلَم، ثم اسم الإشارة، ثم الاسم الموصول، ثم المعرف بأل، ثم المضاف لمعرفة."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: الضمير (إيّاكَ) يُعد من الضمائر المنفصلة التي تختص بمحل النصب.",
+            correctBool: true,
+            explanation: "صح؛ فضمائر النصب المنفصلة هي (إيّاي، إيّانا، إيّاك، إيّاه...)."
+          },
+          {
+            type: "write",
+            q: "اكتب اسم النون التي تلحق الفعل وجوباً قبل ياء المتكلم مثل (أكرمني) لتقي الفعل من الكسر:",
+            acceptedAnswers: ["نون الوقاية", "الوقاية"],
+            modelAnswer: "نون الوقاية",
+            explanation: "نون الوقاية تلحق الفعل قبل ياء المتكلم لتقيه من الكسر الذي يشبه الجر، قال ابن مالك: (وقبل يا النفس مع الفعل التزم ** نون وقاية)."
+          },
+          {
+            type: "mcq",
+            q: "ينقسم العَلَم باعتبار دلالته إلى اسم وكنية ولقب؛ فما ضابط (الكنية)؟",
+            options: [
+              "كل مركب إضافي صُدّر بأب أو أم (مثل: أبو بكر، أم كلثوم)",
+              "ما أشعر بمدح أو ذم (مثل: زين العابدين)",
+              "ما ليس بكنية ولا لقب (مثل: محمد)",
+              "العلم المنقول من فعل"
+            ],
+            correct: 0,
+            explanation: "الكنية ما صُدّر بأب أو أم، واللقب ما أشعر بمدح أو ذم، والاسم ما عدا ذلك."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: إذا اجتمع الاسم واللقب وجب تقديم الاسم وتأخير اللقب غالباً مثل (جاءَ عمرُ الفاروقُ).",
+            correctBool: true,
+            explanation: "صح؛ قال ابن مالك: (وأخّرن ذا إن سواه صحبا)."
+          },
+          {
+            type: "write",
+            q: "أكمل: العَلَم الذي يدل على الجنس بأسره لا على فرد معين مثل (أسامة) للأسد يُسمى عَلَم ......",
+            acceptedAnswers: ["جنس", "الجنس", "علم جنس"],
+            modelAnswer: "جنس",
+            explanation: "علم الجنس كعلم الشخص في حكمه اللفظي (يُمنع من الصرف ولا تدخل عليه أل)، لكنه في المعنى كالنكرة يدل على الجنس."
+          }
+        ]
+      },
+      {
+        id: 6,
+        title: "المستوى 6: أسماء الإشارة والموصول والمعرف بأل",
+        questions: [
+          {
+            type: "mcq",
+            q: "أيُّ أسماء الإشارة الآتية يُستعمل للمفردة المؤنثة كما ذكر ابن مالك؟",
+            options: [
+              "ذِي وذِه وتِي وتِه وتَا",
+              "ذا",
+              "أولاء",
+              "هنا"
+            ],
+            correct: 0,
+            explanation: "قال ابن مالك: (بذا لمفرد مذكر أشر ** بذي وذه تي تا على الأنثى اقتصر)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: جميع أسماء الإشارة مبنية ما عدا (هذان وهاتان) فإنهما يُعربان إعراب المثنى بالألف والياء.",
+            correctBool: true,
+            explanation: "صح؛ يُرفعان بالألف (هذان، هاتان) ويُنصبان ويُجران بالياء (هذين، هاتين)."
+          },
+          {
+            type: "write",
+            q: "اكتب اسم الإشارة الذي يُشار به إلى المكان القريب:",
+            acceptedAnswers: ["هنا", "ههنا"],
+            modelAnswer: "هنا",
+            explanation: "يُشار إلى المكان القريب بـ (هنا) أو (ههنا)، وإلى البعيد بـ (هناك) و(هنالك) و(ثَمَّ)."
+          },
+          {
+            type: "mcq",
+            q: "ما الشرط الأساسي في جملة (صلة الموصول) الواقعة بعد الاسم الموصول؟",
+            options: [
+              "أن تكون جملة خبرية مشتملة على ضمير عائد يطابق الموصول",
+              "أن تكون جملة إنشائية طلبية",
+              "أن تخلو من الضمائر تماماً",
+              "أن تكون مفردة غير جملة"
+            ],
+            correct: 0,
+            explanation: "يُشترط في صلة الموصول أن تكون جملة خبرية معهودة، وتشتمل على ضمير عائد يطابق الموصول في النوع والعدد."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: (مَن) الموصولة تُستعمل غالباً للعاقل، و(ما) الموصولة تُستعمل غالباً لغير العاقل.",
+            correctBool: true,
+            explanation: "صح؛ وهما من الأسماء الموصولة المشتركة (التي بلفظ واحد للمفرد والمثنى والجمع)."
+          },
+          {
+            type: "write",
+            q: "ما نوع (أل) الموصولة التي تدخل على اسم الفاعل واسم المفعول نحو (الضاربُ والمضروبُ)؟",
+            acceptedAnswers: ["موصولة", "الموصولة", "ال الموصولة"],
+            modelAnswer: "الموصولة",
+            explanation: "(أل) الموصولة تدخل على الصفات الصريحة (اسم الفاعل واسم المفعول) بمعنى الذي."
+          },
+          {
+            type: "mcq",
+            q: "في قوله تعالى: ﴿كَمَا أَرْسَلْنَا إِلَىٰ فِرْعَوْنَ رَسُولًا * فَعَصَىٰ فِرْعَوْنُ الرَّسُولَ﴾، ما نوع (أل) في (الرسول)؟",
+            options: [
+              "عهدية (للعهد الذكري)",
+              "جنسية لاستغراق الأفراد",
+              "زائدة لازمة",
+              "موصولة"
+            ],
+            correct: 0,
+            explanation: "هي (أل) العهدية الذكرية؛ لأن الاسم سبق ذكره نكرة (رسولاً) ثم أُعيد معرفاً بـ (أل) (الرسول)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: في قوله تعالى ﴿إِنَّ الْإِنسَانَ لَفِي خُسْرٍ﴾، نوع (أل) في (الإنسان) جنسية لاستغراق الأفراد.",
+            correctBool: true,
+            explanation: "صح؛ وعلامتها صحة حلول (كل) محلها: إن كل إنسان لفي خسر."
+          },
+          {
+            type: "write",
+            q: "أكمل: تُبدل لام التعريف ميماً في لغة طيّئ وحِمْيَر فيُقال في (الصيام): ......",
+            acceptedAnswers: ["امصيام", "أم صيام"],
+            modelAnswer: "امصيام",
+            explanation: "في لغة طيّئ وحِمْيَر تُبدل لام (أل) ميماً، ومنه الحديث: (ليس من امبر امصيام في امسفر)."
+          }
+        ]
+      },
+      {
+        id: 7,
+        title: "المستوى 7: المبتدأ والخبر وأحكامهما",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما عامل الرفع في كلٍّ من المبتدأ والخبر عند سيبويه وجمهور البصريين؟",
+            options: [
+              "المبتدأ مرفوع بالابتداء، والخبر مرفوع بالمبتدأ",
+              "كلاهما مرفوع بالابتداء فقط",
+              "المبتدأ مرفوع بالخبر، والخبر مرفوع بالابتداء",
+              "كلاهما مرفوع بالفعل المحذوف"
+            ],
+            correct: 0,
+            explanation: "المذهب الصحيح عند سيبويه وابن مالك أن المبتدأ مرفوع بالابتداء (عامل معنوي)، والخبر مرفوع بالمبتدأ (عامل لفظي)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: يصح الابتداء بالنكرة إذا أفادت، مثل أن تتقدم عليها أداة استفهام أو نفي أو تُوصف أو تُضاف.",
+            correctBool: true,
+            explanation: "صح؛ قال ابن مالك: (ولا يجوز الابتدا بالنكره ** ما لم تفد كعند زيد نمره)."
+          },
+          {
+            type: "write",
+            q: "حدّد نوع الخبر (مفرد / جملة / شبه جملة) في قولنا (العلمُ نافعٌ):",
+            acceptedAnswers: ["مفرد", "خبر مفرد"],
+            modelAnswer: "مفرد",
+            explanation: "(نافع) خبر مفرد لأنه ليس جملة ولا شبه جملة."
+          },
+          {
+            type: "mcq",
+            q: "متى يجب تقديم الخبر على المبتدأ وجوباً في نحو: (في الدارِ رجلٌ)؟",
+            options: [
+              "لأن الخبر شبه جملة والمبتدأ نكرة محضة ليس لها مسوّغ إلا التقديم",
+              "لأن المبتدأ معرفة",
+              "لأن الخبر جملة فعلية",
+              "لأن المبتدأ ضمير منفصل"
+            ],
+            correct: 0,
+            explanation: "يجب تقديم الخبر إذا كان ظرفاً أو جاراً ومجروراً والمبتدأ نكرة غير مختصة، لئلا يُتوهم أنه نعت."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: يجب تقديم الخبر في نحو (في الدارِ صاحبُها) لأن في المبتدأ ضميراً يعود على بعض الخبر.",
+            correctBool: true,
+            explanation: "صح؛ لأن الضمير لا يعود على متأخر لفظاً ورتبة، فوجب تقديم الخبر."
+          },
+          {
+            type: "write",
+            q: "أكمل: يجب حذف الخبر وجوباً بعد (لولا) الامتناعية إذا كان كوناً عاماً، مثل (لولا اللهُ ما اهتدينا) والتقدير: لولا اللهُ ......",
+            acceptedAnswers: ["موجود", "موجودٌ"],
+            modelAnswer: "موجود",
+            explanation: "قال ابن مالك: (وبعد لولا غالباً حذف الخبر ** حتم وفي نص يمين ذا استقر)."
+          },
+          {
+            type: "mcq",
+            q: "ما حكم الخبر في قولنا: (لَعَمْرُكَ لأفعلنَّ الخيرَ)؟",
+            options: [
+              "محذوف وجوباً وتقديره (قسمي)",
+              "مذكور في الجملة",
+              "محذوف جوازاً",
+              "مقدم وجوباً"
+            ],
+            correct: 0,
+            explanation: "إذا كان المبتدأ نصاً صريحاً في اليمين مثل (لعمرك) وجب حذف الخبر وتقديره: قسمي."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: يجوز تعدد الخبر لمبتدأ واحد بغير حرف عطف، نحو: (الرمانُ حلوٌ حامضٌ).",
+            correctBool: true,
+            explanation: "صح؛ قال ابن مالك: (وأخبروا باثنين أو بأكثرا ** عن واحد كهم سراة شعرا)."
+          },
+          {
+            type: "write",
+            q: "حدّد نوع الخبر في قوله تعالى ﴿واللهُ يقبضُ ويبسطُ﴾ (مفرد / جملة فعلية / شبه جملة):",
+            acceptedAnswers: ["جملة فعلية", "جملة", "خبر جملة فعلية"],
+            modelAnswer: "جملة فعلية",
+            explanation: "جملة (يقبض) في محل رفع خبر المبتدأ (لفظ الجلالة)."
+          }
+        ]
+      },
+      {
+        id: 8,
+        title: "المستوى 8: كان وأخواتها وكاد وأخواتها",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما العمل النحوي لـ (كان وأخواتها) عند دخولها على الجملة الاسمية؟",
+            options: [
+              "ترفع المبتدأ اسماً لها وتنصب الخبر خبراً لها",
+              "تنصب المبتدأ وترفع الخبر",
+              "تنصب المبتدأ والخبر معاً",
+              "ترفع المبتدأ والخبر معاً"
+            ],
+            correct: 0,
+            explanation: "قال ابن مالك: (ترفع كان المبتدا اسماً والخبر ** تنصبه ككان سيداً عمر)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: الأفعال (زال، برح، فتئ، انفك) لا تعمل عمل (كان) إلا بشرط أن يتقدم عليها نفي أو شبه نفي.",
+            correctBool: true,
+            explanation: "صح؛ مثل: ﴿ولا يزالون مختلفين﴾ و﴿لن نبرح عليه عاكفين﴾."
+          },
+          {
+            type: "write",
+            q: "اكتب اسم الفعل الناسخ الذي يُشترط لعمله أن تُسبقه (ما) المصدرية الظرفية بمعنى مدة دوام:",
+            acceptedAnswers: ["دام", "ما دام"],
+            modelAnswer: "دام",
+            explanation: "(دام) يُشترط لعملها أن تُسبق بـ (ما) المصدرية الظرفية، مثل: ﴿وأوصاني بالصلاة والزكاة ما دمتُ حياً﴾."
+          },
+          {
+            type: "mcq",
+            q: "ماذا يُسمى الفعل (كان) إذا اكتفى بمرفوعه ولم يحتج إلى خبر منصوب، نحو ﴿وإن كان ذو عسرة﴾؟",
+            options: [
+              "كان التامة (وما بعدها فاعل)",
+              "كان الناقصة",
+              "كان الزائدة",
+              "فعل مقاربة"
+            ],
+            correct: 0,
+            explanation: "(كان) التامة تأتي بمعنى (وُجد أو حصل) وتكتفي بفاعلها، وما بعدها يُعرب فاعلاً مرفوعاً."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: خبر (كاد وأخواتها) لا يكون إلا جملة فعلية فعلها مضارع رافع لضمير يعود على اسمها.",
+            correctBool: true,
+            explanation: "صح؛ قال ابن مالك: (ككان كاد وعسى لكن ندر ** غير مضارع لهذين خبر)."
+          },
+          {
+            type: "write",
+            q: "أكمل: تنقسم أفعال (كاد وأخواتها) إلى ثلاثة أقسام: أفعال المقاربة، وأفعال الرجاء، وأفعال ......",
+            acceptedAnswers: ["الشروع", "شروع"],
+            modelAnswer: "الشروع",
+            explanation: "المقاربة (كاد، كرب، أوشك)، والرجاء (عسى، حرى، اخلولق)، والشروع (شرع، بدأ، أخذ، طفق، جعل...)."
+          },
+          {
+            type: "mcq",
+            q: "ما حكم اقتران خبر أفعال الشروع (مثل: شرعَ، بدأَ، أخذَ) بـ (أنْ) المصدرية؟",
+            options: [
+              "يمتنع اقترانه بـ (أنْ) لأن الشروع يدل على الحال و(أنْ) للاستقبال",
+              "يجب اقترانه بـ (أنْ)",
+              "يكثر اقترانه بـ (أنْ)",
+              "يقل اقترانه بـ (أنْ)"
+            ],
+            correct: 0,
+            explanation: "يمتنع اقتران خبر أفعال الشروع بـ (أنْ)؛ فلا يُقال: شرع الطالب أن يذاكر، بل: شرع الطالب يذاكر."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: يجب اقتران خبر (حرى) و(اخلولق) بـ (أنْ) المصدرية دائماً.",
+            correctBool: true,
+            explanation: "صح؛ يجب اقتران خبر (حرى واخلولق) بـ (أنْ)، ويكثر مع (عسى وأوشك)، ويقل مع (كاد وكرب)."
+          },
+          {
+            type: "write",
+            q: "أعرب كلمة (مجتهداً) في قولنا (أصبحَ الطالبُ مجتهداً): خبر أصبح ...... وعلامة نصبه الفتحة.",
+            acceptedAnswers: ["منصوب", "منصوبٌ"],
+            modelAnswer: "منصوب",
+            explanation: "(مجتهداً) خبر أصبح منصوب وعلامة نصبه الفتحة الظاهرة."
+          }
+        ]
+      },
+      {
+        id: 9,
+        title: "المستوى 9: إنَّ وأخواتها ولا النافية للجنس وظنَّ",
+        questions: [
+          {
+            type: "mcq",
+            q: "ما العمل النحوي لـ (إنَّ وأخواتها) عند دخولها على الجملة الاسمية؟",
+            options: [
+              "تنصب المبتدأ اسماً لها وترفع الخبر خبراً لها",
+              "ترفع المبتدأ وتنصب الخبر",
+              "تنصب المبتدأ والخبر معاً",
+              "تجزم الفعل المضارع"
+            ],
+            correct: 0,
+            explanation: "إنَّ وأخواتها حروف ناسخة تنصب الاسم وترفع الخبر (عكس عمل كان)."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: إذا اتصلت (ما) الزائدة الكافّة بـ (إنَّ) نحو ﴿إنما المؤمنون إخوة﴾ فإنها تكفّها عن العمل وتُهيّئها للدخول على الجملة الاسمية والفعلية.",
+            correctBool: true,
+            explanation: "صح؛ ما عدا (ليت) فيجوز فيها الإعمال والإهمال عند اتصالها بـ (ما)."
+          },
+          {
+            type: "write",
+            q: "أكمل: تُكسر همزة (إنَّ) وجوباً إذا وقعت في ابتداء الكلام، أو بعد القول، أو في أول جملة ...... الموصول.",
+            acceptedAnswers: ["صلة", "الصلة"],
+            modelAnswer: "صلة",
+            explanation: "تُكسر همزة (إنَّ) في مواضع منها: ابتداء الكلام، وبعد القول، وأول جملة الصلة، وجواب القسم."
+          },
+          {
+            type: "mcq",
+            q: "ما حكم اسم (لا النافية للجنس) إذا كان مفرداً (أي ليس مضافاً ولا شبيهاً بالمضاف) نحو: (لا رجلَ في الدار)؟",
+            options: [
+              "يُبنى على ما يُنصب به في محل نصب",
+              "يُعرب منصوباً بالفتحة المنوّنة",
+              "يُرفع بالضمة",
+              "يُجر بالكسرة"
+            ],
+            correct: 0,
+            explanation: "اسم (لا) المفرد يُبنى على ما يُنصب به (الفتح للمفرد، الياء للمثنى وجمع المذكر، الكسر لجمع المؤنث) في محل نصب."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: اسم (لا النافية للجنس) إذا كان مضافاً مثل (لا طالبَ علمٍ مقصرٌ) يكون معرباً منصوباً.",
+            correctBool: true,
+            explanation: "صح؛ يُعرب اسم (لا) منصوباً إذا كان مضافاً أو شبيهاً بالمضاف."
+          },
+          {
+            type: "write",
+            q: "أكمل: تنصب (ظنَّ وأخواتها) مفعولين أصلهما ...... والخبر.",
+            acceptedAnswers: ["المبتدأ", "مبتدأ", "المبتدا"],
+            modelAnswer: "المبتدأ",
+            explanation: "ظنَّ وأخواتها (أفعال القلوب والتحويل) تنصب مفعولين أصلهما المبتدأ والخبر."
+          },
+          {
+            type: "mcq",
+            q: "تنقسم أفعال القلوب في باب (ظنَّ وأخواتها) إلى أفعال يقين وأفعال رجحان؛ فأيٌّ مما يلي من أفعال اليقين؟",
+            options: [
+              "عَلِمَ ووَجَدَ ورَأَى (القلبية)",
+              "ظَنَّ وحَسِبَ وخَالَ وزَعَمَ",
+              "صَيَّرَ وجَعَلَ واتَّخَذَ",
+              "كَادَ وعَسَى وأَوْشَكَ"
+            ],
+            correct: 0,
+            explanation: "أفعال اليقين: علم، وجد، رأى، درى، تعلّمْ؛ وأفعال الرجحان: ظن، حسب، خال، زعم."
+          },
+          {
+            type: "tf",
+            q: "صح أم خطأ: (التعليق) في باب ظنَّ هو إبطال العمل لفظاً لا محلاً لمانع مثل لام الابتداء أو الاستفهام نحو: (علمتُ لزيدٌ قائمٌ).",
+            correctBool: true,
+            explanation: "صح؛ فالجملة بعد لام الابتداء في محل نصب سدت مسد مفعولي (علمت)."
+          },
+          {
+            type: "write",
+            q: "أعرب كلمة (ناجحاً) في قولنا (ظننتُ الطالبَ ناجحاً): مفعول به ...... منصوب وعلامة نصبه الفتحة.",
+            acceptedAnswers: ["ثان", "ثاني", "ثانٍ", "الثاني"],
+            modelAnswer: "ثانٍ",
+            explanation: "(الطالب) مفعول به أول، و(ناجحاً) مفعول به ثانٍ منصوب وعلامة نصبه الفتحة الظاهرة."
+          }
+        ]
+      }
+    ];
+
+    /**
+     * =========================================================================
+     * 2. محرك المؤثرات الصوتية (Web Audio API)
+     * =========================================================================
+     */
+    class SoundEngine {
+      constructor() {
+        this.enabled = true;
+        this.ctx = null;
+      }
+
+      init() {
+        try {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        } catch (e) {}
+      }
+
+      playTone(freq, type, duration, vol = 0.15, slideFreq = null) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          if (slideFreq) {
+            osc.frequency.exponentialRampToValueAtTime(slideFreq, this.ctx.currentTime + duration);
+          }
+
+          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      cast() { this.playTone(520, 'sine', 0.25, 0.14, 180); }
+      bite() { this.playTone(320, 'triangle', 0.15, 0.16, 620); }
+      correct() {
+        this.playTone(523.25, 'sine', 0.14, 0.18);
+        setTimeout(() => this.playTone(659.25, 'sine', 0.14, 0.18), 100);
+        setTimeout(() => this.playTone(783.99, 'sine', 0.28, 0.2), 200);
+      }
+      wrong() { this.playTone(260, 'sawtooth', 0.22, 0.12, 140); }
+      buy() {
+        this.playTone(700, 'triangle', 0.12, 0.18);
+        setTimeout(() => this.playTone(980, 'triangle', 0.22, 0.2), 90);
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /**
+     * =========================================================================
+     * 3. إدارة الحساب والحفظ التلقائي في المتصفح (localStorage)
+     * =========================================================================
+     */
+    const STORAGE_KEY = "azhar_nahw_fishing_profile_v2";
+
+    const gameState = {
+      playerName: "",
+      coins: 0,
+      currentLevel: 1,
+      unlockedLevel: 1,
+      levelProgress: {}, // مثال: { "1": [0, 2, 5], "2": [1] } لحفظ الأسماك المصطادة في كل مستوى
+      isCasting: false,
+      activeFishGroup: [],
+      upgrades: {
+        rodLevel: 1,
+        boatLevel: 1,
+        doubleCatch: 0,
+        lineDepthLevel: 1
+      }
+    };
+
+    function saveProfile() {
+      try {
+        const payload = {
+          playerName: gameState.playerName,
+          coins: gameState.coins,
+          currentLevel: gameState.currentLevel,
+          unlockedLevel: gameState.unlockedLevel,
+          levelProgress: gameState.levelProgress,
+          upgrades: gameState.upgrades
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        console.warn("تعذر الحفظ المحلي:", e);
+      }
+    }
+
+    function loadProfile() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (!data || !data.playerName || !data.playerName.trim()) return false;
+
+        gameState.playerName = data.playerName.trim();
+        gameState.coins = Number(data.coins) || 0;
+        gameState.currentLevel = Math.min(9, Math.max(1, Number(data.currentLevel) || 1));
+        gameState.unlockedLevel = Math.min(9, Math.max(1, Number(data.unlockedLevel) || 1));
+        gameState.levelProgress = data.levelProgress && typeof data.levelProgress === "object" ? data.levelProgress : {};
+        gameState.upgrades = {
+          rodLevel: (data.upgrades && Number(data.upgrades.rodLevel)) || 1,
+          boatLevel: (data.upgrades && Number(data.upgrades.boatLevel)) || 1,
+          doubleCatch: (data.upgrades && Number(data.upgrades.doubleCatch)) || 0,
+          lineDepthLevel: (data.upgrades && Number(data.upgrades.lineDepthLevel)) || 1
+        };
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function getCaughtSetForLevel(levelId) {
+      const arr = gameState.levelProgress[String(levelId)] || [];
+      return new Set(arr);
+    }
+
+    function markFishCaughtInStorage(levelId, fishIndex) {
+      const key = String(levelId);
+      if (!Array.isArray(gameState.levelProgress[key])) {
+        gameState.levelProgress[key] = [];
+      }
+      if (!gameState.levelProgress[key].includes(fishIndex)) {
+        gameState.levelProgress[key].push(fishIndex);
+      }
+      saveProfile();
+    }
+
+    function getTotalSolvedQuestionsCount() {
+      let total = 0;
+      for (let i = 1; i <= 9; i++) {
+        const arr = gameState.levelProgress[String(i)];
+        if (Array.isArray(arr)) total += arr.length;
+      }
+      return total;
+    }
+
+    /**
+     * =========================================================================
+     * 4. تطبيع ومطابقة الإجابات العربية المكتوبة يدوياً
+     * =========================================================================
+     */
+    function normalizeArabicText(str) {
+      if (!str) return "";
+      return str
+        .toString()
+        .trim()
+        // إزالة التشكيل والمد
+        .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+        // توحيد الهمزات
+        .replace(/[أإآٱ]/g, "ا")
+        // توحيد التاء المربوطة والهاء
+        .replace(/ة/g, "ه")
+        // توحيد الياء والألف المقصورة
+        .replace(/ى/g, "ي")
+        // إزالة علامات الترقيم والرموز الزائدة
+        .replace(/[.,،؛؟!:"'()\[\]{}\-_/\\]/g, " ")
+        // توحيد المسافات المتعددة
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+    }
+
+    function stripAlPrefix(normStr) {
+      return normStr.startsWith("ال") && normStr.length > 3 ? normStr.slice(2) : normStr;
+    }
+
+    function checkWrittenAnswerMatch(userInput, acceptedAnswers) {
+      const normUser = normalizeArabicText(userInput);
+      if (!normUser) return false;
+      const userNoAl = stripAlPrefix(normUser);
+
+      return acceptedAnswers.some(ans => {
+        const normAns = normalizeArabicText(ans);
+        const ansNoAl = stripAlPrefix(normAns);
+        return (
+          normUser === normAns ||
+          userNoAl === ansNoAl ||
+          (normAns.length >= 3 && normUser.includes(normAns))
+        );
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 5. إعدادات المتجر والأسماك
+     * =========================================================================
+     */
+    const SHOP_ITEMS = [
+      {
+        id: "rod",
+        title: "تطوير سرعة الصنارة 🎣",
+        desc: "يزيد سرعة رمي الصنارة وسحبها، ويضيف مكافأة +5 نقاط إضافية لكل سمكة.",
+        maxLevel: 3,
+        getLevel: () => gameState.upgrades.rodLevel,
+        getCost: () => gameState.upgrades.rodLevel * 60,
+        apply: () => {
+          gameState.upgrades.rodLevel++;
+          updateBoatAppearance();
+          saveProfile();
+        }
+      },
+      {
+        id: "boat",
+        title: "تكبير حجم القارب ومضاعفة النقاط ⛵",
+        desc: "يوسّع حجم القارب على الشاشة ويزيد أرباح النقاط بنسبة +20% لكل مستوى.",
+        maxLevel: 3,
+        getLevel: () => gameState.upgrades.boatLevel,
+        getCost: () => gameState.upgrades.boatLevel * 80,
+        apply: () => {
+          gameState.upgrades.boatLevel++;
+          updateBoatAppearance();
+          saveProfile();
+        }
+      },
+      {
+        id: "doubleCatch",
+        title: "خطاف مزدوج (صيد سمكتين معاً) 🪝✨",
+        desc: "يمكّنك من اصطياد سمكتين قريبتين معاً بضغطة واحدة وكسب نقاطهما معاً عند الإجابة!",
+        maxLevel: 1,
+        getLevel: () => gameState.upgrades.doubleCatch,
+        getCost: () => 120,
+        apply: () => {
+          gameState.upgrades.doubleCatch = 1;
+          document.getElementById("secondHookVisual").classList.remove("hidden");
+          saveProfile();
+        }
+      },
+      {
+        id: "depth",
+        title: "تطوير طول خيط الصنارة 📏",
+        desc: "يطيل خيط الصنارة للوصول بسهولة إلى الأسماك الذهبية العميقة (+60 و +80 نقطة) في القاع!",
+        maxLevel: 3,
+        getLevel: () => gameState.upgrades.lineDepthLevel,
+        getCost: () => gameState.upgrades.lineDepthLevel * 70,
+        apply: () => {
+          gameState.upgrades.lineDepthLevel++;
+          updateMaxDepthVisual();
+          saveProfile();
+        }
+      }
+    ];
+
+    // 7 أسماك ملونة متوسطة (25 - 40) + 2 سمكتان ذهبيتان نادرتان (60 - 80)
+    const FISH_TEMPLATES = [
+      { color: "#f472b6", eye: "#1e1b4b", points: 25, depthPct: 15, speed: 1.15, scale: 0.92, isGold: false },
+      { color: "#c084fc", eye: "#1e1b4b", points: 25, depthPct: 25, speed: -1.05, scale: 0.95, isGold: false },
+      { color: "#86efac", eye: "#064e3b", points: 30, depthPct: 35, speed: 1.35, scale: 0.97, isGold: false },
+      { color: "#38bdf8", eye: "#0c4a6e", points: 30, depthPct: 44, speed: -1.25, scale: 1.0, isGold: false },
+      { color: "#fb923c", eye: "#431407", points: 35, depthPct: 53, speed: 1.15, scale: 1.03, isGold: false },
+      { color: "#a78bfa", eye: "#1e1b4b", points: 35, depthPct: 62, speed: -1.4, scale: 1.06, isGold: false },
+      { color: "#fb7185", eye: "#4c0519", points: 40, depthPct: 71, speed: 1.25, scale: 1.08, isGold: false },
+      { color: "#facc15", eye: "#422006", points: 60, depthPct: 80, speed: -1.5, scale: 1.22, isGold: true },
+      { color: "#fde047", eye: "#422006", points: 80, depthPct: 88, speed: 1.65, scale: 1.28, isGold: true }
+    ];
+
+    let activeFishes = [];
+    let animationFrameId = null;
+
+    // فيزياء تأرجح الصنارة البندولية
+    const hookPhysics = {
+      state: 'swinging', // 'swinging' | 'shooting' | 'retracting'
+      angle: 0,
+      swingDir: 1,
+      baseLength: 48,
+      currentLength: 48,
+      caughtFishes: []
+    };
+
+    /**
+     * =========================================================================
+     * 6. دوال الواجهة والتحديث البصري
+     * =========================================================================
+     */
+    function showToast(msg) {
+      const toast = document.getElementById("toastMessage");
+      toast.textContent = msg;
+      toast.classList.remove("hidden");
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2700);
+    }
+
+    function getMaxDepthPercent() {
+      if (gameState.upgrades.lineDepthLevel === 1) return 68;
+      if (gameState.upgrades.lineDepthLevel === 2) return 83;
+      return 98;
+    }
+
+    function updateMaxDepthVisual() {
+      const line = document.getElementById("maxDepthLine");
+      const pct = getMaxDepthPercent();
+      line.style.top = pct + "%";
+      if (pct >= 98) {
+        line.classList.add("opacity-0");
+      } else {
+        line.classList.remove("opacity-0");
+      }
+    }
+
+    function updateBoatAppearance() {
+      const boatWrapper = document.getElementById("boatWrapper");
+      const boatHull = document.getElementById("boatHull");
+      const boatStripe = document.getElementById("boatUpgradeStripe");
+      const rodStick = document.getElementById("rodStick");
+
+      const baseWidth = 185 + (gameState.upgrades.boatLevel - 1) * 32;
+      boatWrapper.style.width = baseWidth + "px";
+
+      if (gameState.upgrades.boatLevel === 1) {
+        boatHull.setAttribute("fill", "#581c87");
+        boatStripe.setAttribute("opacity", "0");
+      } else if (gameState.upgrades.boatLevel === 2) {
+        boatHull.setAttribute("fill", "#6b21a8");
+        boatStripe.setAttribute("fill", "#a855f7");
+        boatStripe.setAttribute("opacity", "1");
+      } else if (gameState.upgrades.boatLevel >= 3) {
+        boatHull.setAttribute("fill", "#4c1d95");
+        boatStripe.setAttribute("fill", "#facc15");
+        boatStripe.setAttribute("opacity", "1");
+      }
+
+      if (gameState.upgrades.rodLevel === 1) {
+        rodStick.setAttribute("stroke", "#92400e");
+        rodStick.setAttribute("stroke-width", "5");
+      } else if (gameState.upgrades.rodLevel === 2) {
+        rodStick.setAttribute("stroke", "#0284c7");
+        rodStick.setAttribute("stroke-width", "6");
+      } else if (gameState.upgrades.rodLevel >= 3) {
+        rodStick.setAttribute("stroke", "#facc15");
+        rodStick.setAttribute("stroke-width", "7");
+      }
+
+      if (gameState.upgrades.doubleCatch === 1) {
+        document.getElementById("secondHookVisual").classList.remove("hidden");
+      } else {
+        document.getElementById("secondHookVisual").classList.add("hidden");
+      }
+
+      updateHookVisuals();
+    }
+
+    function updateHUD() {
+      document.getElementById("coinsDisplay").textContent = gameState.coins;
+      document.getElementById("shopCoinsDisplay").textContent = gameState.coins;
+      document.getElementById("currentLevelText").textContent = `المستوى ${gameState.currentLevel}`;
+      document.getElementById("boatNameText").textContent = gameState.playerName;
+
+      const levelObj = NAHW_LEVELS.find(l => l.id === gameState.currentLevel);
+      document.getElementById("lessonTitleBanner").textContent = levelObj ? levelObj.title : "";
+
+      const caughtSet = getCaughtSetForLevel(gameState.currentLevel);
+      const remaining = 9 - caughtSet.size;
+      document.getElementById("fishRemainingText").textContent = `${remaining}/9`;
+      document.getElementById("fishRemainingMobile").textContent = `${remaining}/9`;
+
+      document.getElementById("totalProgressBadge").textContent = `${getTotalSolvedQuestionsCount()}/81 سؤال`;
+
+      renderLevelDropdown();
+    }
+
+    function renderLevelDropdown() {
+      const container = document.getElementById("levelListContainer");
+      container.innerHTML = "";
+      NAHW_LEVELS.forEach(lvl => {
+        const isUnlocked = lvl.id <= gameState.unlockedLevel;
+        const isCurrent = lvl.id === gameState.currentLevel;
+        const solvedCount = getCaughtSetForLevel(lvl.id).size;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `w-full text-right px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between gap-2 transition ${
+          isCurrent
+            ? "bg-yellow-400 text-slate-950 font-black"
+            : isUnlocked
+              ? "bg-slate-800 hover:bg-slate-700 text-white cursor-pointer"
+              : "bg-slate-900/60 text-slate-500 cursor-not-allowed"
+        }`;
+
+        btn.innerHTML = `
+          <span class="truncate">${lvl.title}</span>
+          <span class="shrink-0 flex items-center gap-1.5">
+            <span class="text-[10px] px-1.5 py-0.5 rounded-full ${isCurrent ? "bg-slate-950/20 text-slate-950" : "bg-slate-950/70 text-cyan-300"}">${solvedCount}/9</span>
+            <span>${isCurrent ? "📍" : solvedCount === 9 ? "✅" : isUnlocked ? "🔓" : "🔒"}</span>
+          </span>
+        `;
+
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          if (!isUnlocked) {
+            showToast("أتمّ المستوى السابق لفتح هذا الباب النحوي!");
+            return;
+          }
+          document.getElementById("levelMenu").classList.add("hidden");
+          loadLevel(lvl.id);
+        };
+
+        container.appendChild(btn);
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 7. توليد الأسماك الـ 9 لكل مستوى (مع استعادة الأسماك المتبقية فقط)
+     * =========================================================================
+     */
+    function createFishSVG(color, eyeColor, isGold) {
+      return `
+        <svg viewBox="0 0 90 50" class="w-full h-full overflow-visible ${isGold ? 'gold-fish-glow' : ''}">
+          <polygon points="18,25 2,10 6,25 2,40" fill="${color}" />
+          <path d="M35,12 Q48,2 56,14 Z" fill="${color}" opacity="0.85" />
+          <ellipse cx="48" cy="25" rx="30" ry="15" fill="${color}" />
+          <path d="M44,24 Q38,29 44,33" stroke="rgba(255,255,255,0.45)" stroke-width="2" fill="none" stroke-linecap="round" />
+          <circle cx="65" cy="21" r="4.5" fill="#ffffff" />
+          <circle cx="66.5" cy="21" r="2.3" fill="${eyeColor}" />
+          <circle cx="67.3" cy="20" r="0.9" fill="#ffffff" />
+          <path d="M72,28 Q75,30 77,27" stroke="${eyeColor}" stroke-width="1.6" fill="none" stroke-linecap="round" />
+          ${isGold ? '<text x="46" y="29" text-anchor="middle" fill="#78350f" font-size="11" font-weight="900">★</text>' : ''}
+        </svg>
+      `;
+    }
+
+    function loadLevel(levelId, forceResetLevel = false) {
+      gameState.currentLevel = levelId;
+      if (forceResetLevel) {
+        gameState.levelProgress[String(levelId)] = [];
+      }
+      saveProfile();
+
+      const caughtSet = getCaughtSetForLevel(levelId);
+      gameState.isCasting = false;
+      gameState.activeFishGroup = [];
+      hookPhysics.state = 'swinging';
+      hookPhysics.currentLength = hookPhysics.baseLength;
+      hookPhysics.caughtFishes = [];
+
+      const container = document.getElementById("fishContainer");
+      container.innerHTML = "";
+      activeFishes = [];
+
+      const oceanWidth = document.getElementById("oceanArea").clientWidth || window.innerWidth;
+
+      FISH_TEMPLATES.forEach((tpl, idx) => {
+        // إذا كان الطالب قد اصطاد هذه السمكة سابقاً في هذا المستوى، لا نظهرها مجدداً
+        if (caughtSet.has(idx)) return;
+
+        const fishEl = document.createElement("div");
+        const baseW = Math.round(64 * tpl.scale);
+        const baseH = Math.round(36 * tpl.scale);
+
+        fishEl.className = "absolute cursor-pointer transition-transform duration-150 hover:scale-110 flex flex-col items-center";
+        fishEl.style.width = baseW + "px";
+        fishEl.style.top = tpl.depthPct + "%";
+
+        const startX = Math.random() * Math.max(100, oceanWidth - baseW - 40) + 20;
+        fishEl.style.left = startX + "px";
+
+        const pointsLabel = document.createElement("span");
+        pointsLabel.className = `text-[11px] sm:text-xs font-black px-1.5 py-0.2 rounded-full mb-0.5 shadow ${
+          tpl.isGold ? "bg-yellow-400 text-slate-950" : "text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+        }`;
+        pointsLabel.textContent = `+${tpl.points}`;
+
+        const svgWrapper = document.createElement("div");
+        svgWrapper.style.width = baseW + "px";
+        svgWrapper.style.height = baseH + "px";
+        svgWrapper.innerHTML = createFishSVG(tpl.color, tpl.eye, tpl.isGold);
+
+        if (tpl.speed < 0) {
+          svgWrapper.style.transform = "scaleX(-1)";
+        }
+
+        fishEl.appendChild(pointsLabel);
+        fishEl.appendChild(svgWrapper);
+        container.appendChild(fishEl);
+
+        const fishObj = {
+          index: idx,
+          el: fishEl,
+          svgWrapper: svgWrapper,
+          x: startX,
+          yPct: tpl.depthPct,
+          vx: tpl.speed,
+          width: baseW,
+          height: baseH,
+          points: tpl.points,
+          isGold: tpl.isGold,
+          caught: false
+        };
+
+        fishEl.addEventListener("click", (e) => {
+          e.stopPropagation();
+          launchHook();
+        });
+
+        activeFishes.push(fishObj);
+      });
+
+      // إذا كانت جميع أسماك هذا المستوى قد اكتملت مسبقاً
+      if (caughtSet.size >= 9) {
+        const emptyBanner = document.createElement("div");
+        emptyBanner.className = "absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-20";
+        emptyBanner.innerHTML = `
+          <div class="bg-slate-900/90 border-2 border-yellow-400 rounded-3xl p-5 max-w-sm shadow-2xl">
+            <div class="text-4xl mb-2">🌟</div>
+            <h3 class="text-lg font-black text-yellow-400 mb-1">أتممت جميع أسئلة هذا المستوى!</h3>
+            <p class="text-xs text-slate-300 mb-4">يمكنك الانتقال لمستوى آخر من القائمة العلوية أو إعادة صيد أسماك هذا المستوى للتدريب.</p>
+            <button type="button" id="replayLevelBtn" class="px-5 py-2.5 rounded-xl game-btn font-black text-sm cursor-pointer">
+              إعادة أسماك هذا المستوى 🔄
+            </button>
+          </div>
+        `;
+        container.appendChild(emptyBanner);
+        document.getElementById("replayLevelBtn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          loadLevel(levelId, true);
+        });
+      }
+
+      updateHUD();
+    }
+
+    /**
+     * =========================================================================
+     * 8. فيزياء تأرجح الصنارة البندولية الملتصقة بطرف العصا
+     * =========================================================================
+     */
+    function getRodTipPlayAreaCoords() {
+      const boatSvg = document.getElementById("boatSvg");
+      const playArea = document.getElementById("playArea");
+      if (!boatSvg || !playArea) return { x: window.innerWidth / 2, y: 120 };
+
+      const svgRect = boatSvg.getBoundingClientRect();
+      const areaRect = playArea.getBoundingClientRect();
+
+      if (svgRect.width === 0 || areaRect.width === 0) {
+        return { x: window.innerWidth / 2, y: 120 };
+      }
+
+      const tipX = (svgRect.left - areaRect.left) + (178 / 240) * svgRect.width;
+      const tipY = (svgRect.top - areaRect.top) + (10 / 130) * svgRect.height;
+      return { x: tipX, y: tipY };
+    }
+
+    function updateHookVisuals() {
+      const tip = getRodTipPlayAreaCoords();
+      const hookX = tip.x + Math.sin(hookPhysics.angle) * hookPhysics.currentLength;
+      const hookY = tip.y + Math.cos(hookPhysics.angle) * hookPhysics.currentLength;
+
+      const line = document.getElementById("fishingLine");
+      const hook = document.getElementById("hookGroup");
+
+      if (line && hook) {
+        line.setAttribute("x1", tip.x);
+        line.setAttribute("y1", tip.y);
+        line.setAttribute("x2", hookX);
+        line.setAttribute("y2", hookY);
+
+        const deg = (-hookPhysics.angle * 180) / Math.PI;
+        hook.setAttribute("transform", `translate(${hookX}, ${hookY}) rotate(${deg})`);
+      }
+
+      return { tipX: tip.x, tipY: tip.y, hookX, hookY };
+    }
+
+    function launchHook() {
+      if (hookPhysics.state !== 'swinging' || gameState.isCasting) return;
+      if (activeFishes.length === 0) return;
+      hookPhysics.state = 'shooting';
+      hookPhysics.caughtFishes = [];
+      gameState.isCasting = true;
+      sound.cast();
+    }
+
+    function animateFishes() {
+      const playArea = document.getElementById("playArea");
+      const oceanEl = document.getElementById("oceanArea");
+
+      if (playArea && oceanEl) {
+        const areaRect = playArea.getBoundingClientRect();
+        const oceanRect = oceanEl.getBoundingClientRect();
+        const maxWidth = oceanEl.clientWidth || window.innerWidth;
+        const oceanOffsetY = oceanRect.top - areaRect.top;
+
+        // 1. تحريك الأسماك أفقياً
+        activeFishes.forEach(fish => {
+          if (fish.caught || hookPhysics.caughtFishes.includes(fish)) return;
+
+          fish.x += fish.vx;
+          if (fish.x <= 8) {
+            fish.x = 8;
+            fish.vx = Math.abs(fish.vx);
+            fish.svgWrapper.style.transform = "scaleX(1)";
+          } else if (fish.x + fish.width >= maxWidth - 8) {
+            fish.x = maxWidth - fish.width - 8;
+            fish.vx = -Math.abs(fish.vx);
+            fish.svgWrapper.style.transform = "scaleX(-1)";
+          }
+
+          fish.el.style.left = fish.x + "px";
+        });
+
+        // 2. تحديث حركة الصنارة البندولية
+        const rodSpeedBoost = 1 + (gameState.upgrades.rodLevel - 1) * 0.28;
+
+        if (hookPhysics.state === 'swinging') {
+          hookPhysics.angle += 0.025 * hookPhysics.swingDir;
+          if (hookPhysics.angle >= 1.15) {
+            hookPhysics.angle = 1.15;
+            hookPhysics.swingDir = -1;
+          } else if (hookPhysics.angle <= -1.15) {
+            hookPhysics.angle = -1.15;
+            hookPhysics.swingDir = 1;
+          }
+          hookPhysics.currentLength = hookPhysics.baseLength;
+        } else if (hookPhysics.state === 'shooting') {
+          hookPhysics.currentLength += 9.5 * rodSpeedBoost;
+          const coords = updateHookVisuals();
+
+          const maxDepthY = oceanOffsetY + (getMaxDepthPercent() / 100) * oceanRect.height;
+          const outOfBounds =
+            coords.hookX <= 12 ||
+            coords.hookX >= areaRect.width - 12 ||
+            coords.hookY >= areaRect.height - 15 ||
+            coords.hookY >= maxDepthY;
+
+          const hitRadius = gameState.upgrades.doubleCatch === 1 ? 46 : 32;
+          activeFishes.forEach(fish => {
+            if (fish.caught || hookPhysics.caughtFishes.includes(fish)) return;
+            const fishCenterX = fish.x + fish.width / 2;
+            const fishCenterY = oceanOffsetY + (fish.yPct / 100) * oceanRect.height + fish.height / 2 + 12;
+
+            const dist = Math.hypot(coords.hookX - fishCenterX, coords.hookY - fishCenterY);
+            if (dist <= hitRadius) {
+              const maxAllowedCatch = gameState.upgrades.doubleCatch === 1 ? 2 : 1;
+              if (hookPhysics.caughtFishes.length < maxAllowedCatch) {
+                hookPhysics.caughtFishes.push(fish);
+                fish.el.classList.add("scale-125");
+                sound.bite();
+              }
+            }
+          });
+
+          const maxAllowedCatch = gameState.upgrades.doubleCatch === 1 ? 2 : 1;
+          if (hookPhysics.caughtFishes.length >= maxAllowedCatch || outOfBounds) {
+            if (hookPhysics.caughtFishes.length === 0 && coords.hookY >= maxDepthY && getMaxDepthPercent() < 98) {
+              showToast("📏 وصلت الصنارة لأقصى مسافة! طوّر طول الخيط من المتجر للوصول للأعماق.");
+            }
+            hookPhysics.state = 'retracting';
+          }
+        } else if (hookPhysics.state === 'retracting') {
+          const retractSpeed = hookPhysics.caughtFishes.length > 0 ? 7.5 * rodSpeedBoost : 12 * rodSpeedBoost;
+          hookPhysics.currentLength -= retractSpeed;
+          const coords = updateHookVisuals();
+
+          hookPhysics.caughtFishes.forEach((fish, idx) => {
+            const offsetX = idx === 0 ? 0 : 22;
+            fish.x = coords.hookX - fish.width / 2 + offsetX;
+            fish.el.style.left = fish.x + "px";
+            fish.el.style.top = Math.max(0, coords.hookY - oceanOffsetY - fish.height / 2) + "px";
+          });
+
+          if (hookPhysics.currentLength <= hookPhysics.baseLength) {
+            hookPhysics.currentLength = hookPhysics.baseLength;
+            hookPhysics.state = 'swinging';
+
+            if (hookPhysics.caughtFishes.length > 0) {
+              gameState.activeFishGroup = [...hookPhysics.caughtFishes];
+              openQuestionModal(gameState.activeFishGroup);
+            } else {
+              gameState.isCasting = false;
+            }
+          }
+        }
+
+        updateHookVisuals();
+      }
+
+      animationFrameId = requestAnimationFrame(animateFishes);
+    }
+
+    /**
+     * =========================================================================
+     * 9. نافذة الأسئلة النحوية بأنواعها الثلاثة (اختيار متعدد / صح وخطأ / كتابة)
+     * =========================================================================
+     */
+    function calculateAwardPoints(fishesGroup) {
+      const rawSum = fishesGroup.reduce((acc, f) => acc + f.points, 0);
+      const rodBonus = (gameState.upgrades.rodLevel - 1) * 5 * fishesGroup.length;
+      const boatMultiplier = 1 + (gameState.upgrades.boatLevel - 1) * 0.2;
+      return Math.round((rawSum + rodBonus) * boatMultiplier);
+    }
+
+    function openQuestionModal(fishesGroup) {
+      const primaryFish = fishesGroup[0];
+      const levelObj = NAHW_LEVELS.find(l => l.id === gameState.currentLevel);
+      const qData = levelObj.questions[primaryFish.index];
+
+      const modal = document.getElementById("questionModal");
+      const totalAwardPoints = calculateAwardPoints(fishesGroup);
+
+      document.getElementById("modalFishBadge").textContent = primaryFish.isGold ? "🐠✨" : "🐟";
+      document.getElementById("modalLevelLesson").textContent = levelObj.title;
+      document.getElementById("modalPointsValue").textContent = totalAwardPoints;
+
+      const typeBadge = document.getElementById("modalQuestionTypeBadge");
+      if (qData.type === "mcq") {
+        typeBadge.textContent = "اختيار من متعدد";
+      } else if (qData.type === "tf") {
+        typeBadge.textContent = "صح أم خطأ";
+      } else {
+        typeBadge.textContent = "اكتب الإجابة بنفسك ✍️";
+      }
+
+      const comboNotice = document.getElementById("modalComboNotice");
+      if (fishesGroup.length > 1) {
+        comboNotice.classList.remove("hidden");
+      } else {
+        comboNotice.classList.add("hidden");
+      }
+
+      document.getElementById("questionText").textContent = qData.q;
+
+      const optionsContainer = document.getElementById("optionsContainer");
+      optionsContainer.innerHTML = "";
+
+      const feedbackBox = document.getElementById("feedbackBox");
+      feedbackBox.classList.add("hidden");
+
+      const closeBtn = document.getElementById("closeQuestionBtn");
+      closeBtn.classList.add("hidden");
+
+      // 1) سؤال اختيار من متعدد (4 خيارات)
+      if (qData.type === "mcq") {
+        const letters = ["أ", "ب", "ج", "د"];
+        qData.options.forEach((optText, optIdx) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "w-full text-right p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white font-bold text-sm sm:text-base transition flex items-center gap-3 cursor-pointer";
+          btn.innerHTML = `
+            <span class="w-7 h-7 rounded-full bg-purple-900 border border-purple-400 text-yellow-300 flex items-center justify-center font-black text-xs shrink-0">${letters[optIdx]}</span>
+            <span>${optText}</span>
+          `;
+          btn.onclick = () => {
+            const isCorrect = optIdx === qData.correct;
+            const buttons = optionsContainer.querySelectorAll("button");
+            buttons.forEach((b, idx) => {
+              b.disabled = true;
+              b.classList.remove("hover:bg-slate-700", "cursor-pointer");
+              if (idx === qData.correct) {
+                b.classList.remove("bg-slate-800", "border-slate-600");
+                b.classList.add("bg-emerald-900/90", "border-emerald-400", "text-emerald-100");
+              } else if (idx === optIdx && !isCorrect) {
+                b.classList.remove("bg-slate-800", "border-slate-600");
+                b.classList.add("bg-rose-900/90", "border-rose-400", "text-rose-100");
+              } else {
+                b.classList.add("opacity-50");
+              }
+            });
+            finalizeQuestionResult(isCorrect, qData, fishesGroup, totalAwardPoints);
+          };
+          optionsContainer.appendChild(btn);
+        });
+      }
+      // 2) سؤال صح أم خطأ
+      else if (qData.type === "tf") {
+        const grid = document.createElement("div");
+        grid.className = "grid grid-cols-2 gap-3";
+
+        const choices = [
+          { val: true, label: "صح ✔️", baseClass: "bg-emerald-950/60 border-emerald-500/60 hover:bg-emerald-900/80 text-emerald-200" },
+          { val: false, label: "خطأ ❌", baseClass: "bg-rose-950/60 border-rose-500/60 hover:bg-rose-900/80 text-rose-200" }
+        ];
+
+        choices.forEach(ch => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `py-4 px-3 rounded-2xl border-2 font-black text-lg transition cursor-pointer ${ch.baseClass}`;
+          btn.textContent = ch.label;
+
+          btn.onclick = () => {
+            const isCorrect = ch.val === qData.correctBool;
+            grid.querySelectorAll("button").forEach((b, idx) => {
+              b.disabled = true;
+              b.classList.remove("cursor-pointer");
+              const btnVal = choices[idx].val;
+              if (btnVal === qData.correctBool) {
+                b.className = "py-4 px-3 rounded-2xl border-2 font-black text-lg bg-emerald-800 border-emerald-400 text-white shadow-lg";
+              } else if (btnVal === ch.val && !isCorrect) {
+                b.className = "py-4 px-3 rounded-2xl border-2 font-black text-lg bg-rose-900 border-rose-400 text-white";
+              } else {
+                b.classList.add("opacity-40");
+              }
+            });
+            finalizeQuestionResult(isCorrect, qData, fishesGroup, totalAwardPoints);
+          };
+
+          grid.appendChild(btn);
+        });
+
+        optionsContainer.appendChild(grid);
+      }
+      // 3) سؤال كتابة الإجابة نصياً
+      else if (qData.type === "write") {
+        const wrapper = document.createElement("div");
+        wrapper.className = "space-y-3";
+
+        const inputEl = document.createElement("input");
+        inputEl.type = "text";
+        inputEl.placeholder = "اكتب إجابتك هنا بالعربية...";
+        inputEl.className = "w-full px-4 py-3.5 rounded-2xl bg-slate-950 border-2 border-purple-500 focus:border-yellow-400 focus:outline-none text-white font-bold text-base sm:text-lg text-center placeholder-slate-500 transition";
+
+        const submitBtn = document.createElement("button");
+        submitBtn.type = "button";
+        submitBtn.className = "w-full py-3 rounded-2xl game-btn font-black text-base cursor-pointer";
+        submitBtn.textContent = "تحقق من الإجابة ✔️";
+
+        const submitWrittenAnswer = () => {
+          const val = inputEl.value.trim();
+          if (!val) {
+            showToast("من فضلك اكتب إجابتك أولاً!");
+            inputEl.focus();
+            return;
+          }
+
+          inputEl.disabled = true;
+          submitBtn.disabled = true;
+          submitBtn.classList.add("hidden");
+
+          const isCorrect = checkWrittenAnswerMatch(val, qData.acceptedAnswers);
+          if (isCorrect) {
+            inputEl.classList.remove("border-purple-500");
+            inputEl.classList.add("border-emerald-400", "bg-emerald-950/60", "text-emerald-200");
+          } else {
+            inputEl.classList.remove("border-purple-500");
+            inputEl.classList.add("border-rose-400", "bg-rose-950/60", "text-rose-200");
+          }
+
+          finalizeQuestionResult(isCorrect, qData, fishesGroup, totalAwardPoints);
+        };
+
+        submitBtn.onclick = submitWrittenAnswer;
+        inputEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") submitWrittenAnswer();
+        });
+
+        wrapper.appendChild(inputEl);
+        wrapper.appendChild(submitBtn);
+        optionsContainer.appendChild(wrapper);
+
+        setTimeout(() => inputEl.focus(), 100);
+      }
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function finalizeQuestionResult(isCorrect, qData, fishesGroup, totalAwardPoints) {
+      const feedbackBox = document.getElementById("feedbackBox");
+      feedbackBox.classList.remove("hidden");
+
+      const modelAnswerNote = qData.type === "write"
+        ? `<div class="mt-1.5 inline-block bg-slate-950/60 border border-yellow-400/40 px-2.5 py-1 rounded-lg text-yellow-300 text-xs">الإجابة النموذجية: <strong>${qData.modelAnswer}</strong></div><br>`
+        : "";
+
+      if (isCorrect) {
+        sound.correct();
+        gameState.coins += totalAwardPoints;
+
+        fishesGroup.forEach(f => {
+          f.caught = true;
+          markFishCaughtInStorage(gameState.currentLevel, f.index);
+          f.el.style.transition = "all 0.35s ease";
+          f.el.style.opacity = "0";
+          f.el.style.transform = "scale(0.2) translateY(-60px)";
+          setTimeout(() => f.el.remove(), 360);
+        });
+
+        saveProfile();
+
+        feedbackBox.className = "mt-4 p-3.5 rounded-2xl border border-emerald-400 bg-emerald-950/85 text-emerald-200 text-sm font-bold leading-relaxed";
+        feedbackBox.innerHTML = `✅ <strong>إجابة صحيحة! أحسنت يا ${gameState.playerName}! (+${totalAwardPoints} نقطة)</strong><br>${modelAnswerNote}<span class="text-xs text-emerald-100 font-normal">${qData.explanation}</span>`;
+      } else {
+        sound.wrong();
+        fishesGroup.forEach(f => {
+          f.el.classList.remove("scale-125");
+          f.el.style.top = f.yPct + "%";
+        });
+
+        feedbackBox.className = "mt-4 p-3.5 rounded-2xl border border-rose-400 bg-rose-950/85 text-rose-200 text-sm font-bold leading-relaxed";
+        feedbackBox.innerHTML = `❌ <strong>إجابة غير مطابقة! عادت السمكة إلى البحر.</strong><br>${modelAnswerNote}<span class="text-xs text-rose-100 font-normal">التوضيح النحوي: ${qData.explanation}</span>`;
+      }
+
+      updateHUD();
+      const closeBtn = document.getElementById("closeQuestionBtn");
+      closeBtn.classList.remove("hidden");
+    }
+
+    function closeQuestionModal() {
+      const modal = document.getElementById("questionModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      gameState.isCasting = false;
+      gameState.activeFishGroup = [];
+      hookPhysics.caughtFishes = [];
+      hookPhysics.state = 'swinging';
+      hookPhysics.currentLength = hookPhysics.baseLength;
+      updateHookVisuals();
+
+      if (getCaughtSetForLevel(gameState.currentLevel).size >= 9) {
+        handleLevelCompleted();
+      }
+    }
+
+    function handleLevelCompleted() {
+      const modal = document.getElementById("levelCompleteModal");
+      const titleEl = document.getElementById("completeTitle");
+      const subEl = document.getElementById("completeSubtitle");
+      const nextBtn = document.getElementById("nextLevelBtn");
+
+      document.getElementById("completeScoreDisplay").textContent = `${gameState.coins} نقطة`;
+
+      if (gameState.currentLevel < 9) {
+        gameState.unlockedLevel = Math.max(gameState.unlockedLevel, gameState.currentLevel + 1);
+        saveProfile();
+        titleEl.textContent = `مبارك يا ${gameState.playerName}! 🎉`;
+        subEl.textContent = `أتممت المستوى ${gameState.currentLevel} بنجاح واصطدت جميع الأسماك التسع! هل أنت مستعد للباب التالي؟`;
+        nextBtn.textContent = `الانتقال للمستوى ${gameState.currentLevel + 1} ⬅️`;
+        nextBtn.onclick = () => {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+          loadLevel(gameState.currentLevel + 1);
+        };
+      } else {
+        saveProfile();
+        titleEl.textContent = `ختمت المنهج كاملاً (٩ مستويات) يا بطل! 👑`;
+        subEl.textContent = `ما شاء الله يا ${gameState.playerName}! أتقنت جميع أبواب النحو المقررة باقتدار. يمكنك اختيار أي مستوى من القائمة للتدريب أو تطوير أدواتك.`;
+        nextBtn.textContent = `العودة للمستوى 1 🔄`;
+        nextBtn.onclick = () => {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+          loadLevel(1);
+        };
+      }
+
+      updateHUD();
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    /**
+     * =========================================================================
+     * 10. نظام المتجر
+     * =========================================================================
+     */
+    function renderShop() {
+      const container = document.getElementById("shopItemsContainer");
+      container.innerHTML = "";
+      document.getElementById("shopCoinsDisplay").textContent = gameState.coins;
+
+      SHOP_ITEMS.forEach(item => {
+        const curLvl = item.getLevel();
+        const isMaxed = curLvl >= item.maxLevel;
+        const cost = item.getCost();
+        const canAfford = gameState.coins >= cost;
+
+        const card = document.createElement("div");
+        card.className = "bg-slate-800/90 border border-slate-700 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+
+        card.innerHTML = `
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-black text-base text-yellow-300">${item.title}</h3>
+              <span class="text-[11px] bg-purple-900 border border-purple-500 px-2 py-0.5 rounded-full text-purple-200 font-bold">
+                المستوى ${curLvl}/${item.maxLevel}
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
+          </div>
+          <div class="shrink-0">
+            ${
+              isMaxed
+                ? `<span class="inline-block w-full sm:w-auto text-center px-4 py-2 rounded-xl bg-emerald-900/60 border border-emerald-500 text-emerald-300 font-black text-xs">مُطوّر بالكامل ✔</span>`
+                : `<button type="button" data-shop-id="${item.id}" class="w-full sm:w-auto px-4 py-2.5 rounded-xl font-black text-xs sm:text-sm transition cursor-pointer ${
+                    canAfford
+                      ? "game-btn"
+                      : "bg-slate-700 text-slate-400 cursor-not-allowed"
+                  }">
+                    شراء (${cost} 🪙)
+                  </button>`
+            }
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      container.querySelectorAll("button[data-shop-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-shop-id");
+          const item = SHOP_ITEMS.find(i => i.id === id);
+          if (!item) return;
+
+          const cost = item.getCost();
+          if (item.getLevel() >= item.maxLevel) return;
+
+          if (gameState.coins < cost) {
+            sound.wrong();
+            showToast("نقاطك غير كافية! اصطد المزيد من الأسماك أولاً.");
+            return;
+          }
+
+          gameState.coins -= cost;
+          item.apply();
+          saveProfile();
+          sound.buy();
+          showToast(`تم شراء (${item.title}) وحفظه في حسابك! 🎉`);
+          updateHUD();
+          renderShop();
+        });
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 11. تهيئة اللعبة والتحقق من وجود حساب محفوظ مسبقاً
+     * =========================================================================
+     */
+    function enterGameWorld(isReturningUser = false) {
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("startScreen").classList.remove("flex");
+      document.getElementById("gameContainer").classList.remove("hidden");
+
+      document.getElementById("boatNameText").textContent = gameState.playerName;
+      updateBoatAppearance();
+      updateMaxDepthVisual();
+      loadLevel(gameState.currentLevel);
+
+      requestAnimationFrame(() => {
+        updateHookVisuals();
+        if (!animationFrameId) {
+          animateFishes();
+        }
+      });
+
+      if (isReturningUser) {
+        showToast(`أهلاً بعودتك يا ${gameState.playerName}! تم استرجاع تقدمك تلقائياً ⛵`);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const startScreen = document.getElementById("startScreen");
+      const startBtn = document.getElementById("startGameBtn");
+      const nameInput = document.getElementById("playerNameInput");
+      const cancelSwitchBtn = document.getElementById("cancelSwitchBtn");
+
+      // التحقق التلقائي من الحساب المحفوظ عند فتح الصفحة
+      const hasSavedProfile = loadProfile();
+      if (hasSavedProfile) {
+        enterGameWorld(true);
+      } else {
+        startScreen.classList.remove("hidden");
+        startScreen.classList.add("flex");
+      }
+
+      // إنشاء حساب جديد أو تحديث الاسم
+      function createOrSwitchAccount() {
+        const entered = nameInput.value.trim();
+        if (!entered) {
+          showToast("من فضلك اكتب اسمك أولاً ليُحفظ على القارب!");
+          nameInput.focus();
+          return;
+        }
+
+        // إذا كان يبدل إلى اسم جديد مختلف عن الاسم الحالي، نبدأ له حساباً جديداً نظيفاً
+        if (gameState.playerName && gameState.playerName !== entered) {
+          gameState.coins = 0;
+          gameState.currentLevel = 1;
+          gameState.unlockedLevel = 1;
+          gameState.levelProgress = {};
+          gameState.upgrades = {
+            rodLevel: 1,
+            boatLevel: 1,
+            doubleCatch: 0,
+            lineDepthLevel: 1
+          };
+        }
+
+        gameState.playerName = entered;
+        saveProfile();
+        sound.init();
+        enterGameWorld(false);
+        showToast(`تم تسجيل وحفظ حساب (${gameState.playerName}) بنجاح! 🔒`);
+      }
+
+      startBtn.addEventListener("click", createOrSwitchAccount);
+      nameInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") createOrSwitchAccount();
+      });
+
+      // زر تبديل اللاعب في الشريط العلوي
+      document.getElementById("switchPlayerBtn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        nameInput.value = "";
+        cancelSwitchBtn.classList.remove("hidden");
+        startScreen.classList.remove("hidden");
+        startScreen.classList.add("flex");
+        setTimeout(() => nameInput.focus(), 80);
+      });
+
+      cancelSwitchBtn.addEventListener("click", () => {
+        startScreen.classList.add("hidden");
+        startScreen.classList.remove("flex");
+      });
+
+      // إطلاق الصنارة عند الضغط في منطقة اللعب
+      document.getElementById("playArea").addEventListener("click", () => {
+        launchHook();
+      });
+
+      // زر الصوت
+      const soundBtn = document.getElementById("soundToggleBtn");
+      soundBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        sound.enabled = !sound.enabled;
+        soundBtn.textContent = sound.enabled ? "🔊" : "🔇";
+        showToast(sound.enabled ? "تم تفعيل الصوت" : "تم كتم الصوت");
+      });
+
+      // قائمة المستويات
+      const levelBtn = document.getElementById("levelDropdownBtn");
+      const levelMenu = document.getElementById("levelMenu");
+      levelBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        levelMenu.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!levelBtn.contains(e.target) && !levelMenu.contains(e.target)) {
+          levelMenu.classList.add("hidden");
+        }
+      });
+
+      // نافذة المتجر
+      document.getElementById("openShopBtn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        renderShop();
+        const shopModal = document.getElementById("shopModal");
+        shopModal.classList.remove("hidden");
+        shopModal.classList.add("flex");
+      });
+
+      document.getElementById("closeShopBtn").addEventListener("click", () => {
+        const shopModal = document.getElementById("shopModal");
+        shopModal.classList.add("hidden");
+        shopModal.classList.remove("flex");
+      });
+
+      document.getElementById("closeQuestionBtn").addEventListener("click", closeQuestionModal);
+
+      window.addEventListener("resize", () => {
+        updateHookVisuals();
+      });
+    });
+  </script>
+</body>
+</html>
